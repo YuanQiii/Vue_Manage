@@ -9,13 +9,13 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
+import '@/icons/index'
+import '@/utils/permission'
+
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
-import SvgIcon from "@/components/svgIcon/SvgIcon.vue"; // svg组件
-Vue.use(ElementUI);
 
-// 全局注册
-Vue.component("svg-icon", SvgIcon);
+Vue.use(ElementUI);
 
 Vue.config.productionTip = false;
 
