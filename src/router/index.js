@@ -25,24 +25,28 @@ Vue.use(VueRouter);
 const Login = () => import("@/views/login/Login.vue");
 const wrongPage = () => import("@/views/404/wrongPage.vue");
 
-const routes = [{
+export const constantRouterMap = [
+  {
     path: "/login",
     name: "login",
     component: Login,
-    hidden: true
+    hidden: true,
   },
   {
-    path: '/404',
-    name: '404',
+    path: "/404",
+    name: "404",
     component: wrongPage,
-    hidden: true
-  }
+    hidden: true,
+  },
 ];
+
+export const asyncRouterMap = [{ path: "*", redirect: "/404", hidden: true }];
 
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes,
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRouterMap,
 });
 
 export default router;

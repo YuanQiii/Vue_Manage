@@ -21,7 +21,7 @@
           type="text"
           v-model="loginForm.username"
           autoComplete="on"
-          placeholder="请输入用户名"
+          placeholder="请输入用户名，admin/productAdmin/orderAdmin"
         >
           <span slot="prefix">
             <svg-icon icon-class="user" class="color-main"></svg-icon>
@@ -32,10 +32,10 @@
         <el-input
           name="password"
           :type="pwdType"
-          @keyup.native.enter="handleLogin"
+          @keyup.enter="handleLogin"
           v-model="loginForm.password"
           autoComplete="on"
-          placeholder="请输入密码"
+          placeholder="请输入密码，测试密码为123456"
         >
           <span slot="prefix">
             <svg-icon icon-class="password" class="color-main"></svg-icon>
@@ -50,7 +50,7 @@
           style="width: 45%"
           type="primary"
           :loading="loading"
-          @click.native.prevent="handleLogin"
+          @click.prevent="handleLogin"
         >
           登录
         </el-button>
@@ -62,30 +62,34 @@
 <script>
 import { setCookie, getCookie } from "@/utils/user";
 
+import { adminLoginApi } from "@/api/user";
+import { setToken, removeToken } from "@/utils/auth";
+import { mapMutations } from "vuex";
+
 export default {
   name: "Login",
   created() {
-    this.loginForm.username = getCookie("username");
-    this.loginForm.password = getCookie("password");
-    if (
-      this.loginForm.username === undefined ||
-      this.loginForm.username == null ||
-      this.loginForm.username === ""
-    ) {
-      this.loginForm.username = "admin";
-    }
-    if (
-      this.loginForm.password === undefined ||
-      this.loginForm.password == null
-    ) {
-      this.loginForm.password = "";
-    }
+    // this.loginForm.username = getCookie("username");
+    // this.loginForm.password = getCookie("password");
+    // if (
+    //   this.loginForm.username === undefined ||
+    //   this.loginForm.username == null ||
+    //   this.loginForm.username === ""
+    // ) {
+    //   this.loginForm.username = "admin";
+    // }
+    // if (
+    //   this.loginForm.password === undefined ||
+    //   this.loginForm.password == null
+    // ) {
+    //   this.loginForm.password = "";
+    // }
   },
   data() {
     return {
       loginForm: {
-        username: "",
-        password: "",
+        username: "admin",
+        password: "123456",
       },
       loginRules: {
         username: [
@@ -100,8 +104,24 @@ export default {
     };
   },
   methods: {
-    validateUsername() {},
-    validatePassword() {},
+    ...mapMutations("user", ["SET_TOKEN"]),
+
+    validateUsername(rule, value, callback) {
+      let temp = value.trim();
+      console.log(temp);
+      if (temp == "admin" || temp == "productAdmin" || temp == "orderAdmin") {
+        callback();
+      } else {
+        callback(new Error("请输入正确的用户名"));
+      }
+    },
+    validatePassword(rule, value, callback) {
+      if (value == "123456") {
+        callback();
+      } else {
+        callback(new Error("密码错误"));
+      }
+    },
     showPwd() {
       if (this.pwdType === "password") {
         this.pwdType = "";
@@ -112,11 +132,19 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          console.log("登录");
-          return true;
+          this.loading = true;
+          adminLoginApi().then((response) => {
+            setCookie("username", this.loginForm.username, 15);
+            setCookie("password", this.loginForm.password, 15);
+            setToken(response.token);
+
+            this.SET_TOKEN(response.token);
+
+            this.$router.push({ path: "/" });
+            this.loading = false;
+          });
         } else {
           console.log("参数验证不合法！");
-          return false;
         }
       });
     },
