@@ -24,6 +24,11 @@ Vue.use(VueRouter);
 
 const Login = () => import("@/views/login/Login.vue");
 const wrongPage = () => import("@/views/404/wrongPage.vue");
+const Layout = () => import("@/views/layout/Layout.vue");
+
+const Home = () => import("@/views/home/Home.vue");
+
+
 
 export const constantRouterMap = [
   {
@@ -38,9 +43,349 @@ export const constantRouterMap = [
     component: wrongPage,
     hidden: true,
   },
+  {
+    path: '',
+    redirect: '/home',
+  },
+  {
+    path: '/home',
+    component: Layout,
+    children: [{
+      path: '',
+      name: 'home',
+      component: Home,
+      meta: { title: '首页', icon: 'home' }
+    }]
+  }
 ];
 
-export const asyncRouterMap = [{ path: "*", redirect: "/404", hidden: true }];
+export const asyncRouterMap = [
+  {
+    path: '/pms',
+    component: Layout,
+    redirect: '/pms/product',
+    name: 'pms',
+    meta: { title: '商品', icon: 'product' },
+    children: [{
+      path: 'product',
+      name: 'product',
+      component: Layout,
+      meta: { title: '商品列表', icon: 'product-list' }
+    },
+    {
+      path: 'addProduct',
+      name: 'addProduct',
+      component: Layout,
+      meta: { title: '添加商品', icon: 'product-add' }
+    },
+    {
+      path: 'updateProduct',
+      name: 'updateProduct',
+      component: Layout,
+      meta: { title: '修改商品', icon: 'product-add' },
+      hidden: true
+    },
+    {
+      path: 'productCate',
+      name: 'productCate',
+      component: Layout,
+      meta: { title: '商品分类', icon: 'product-cate' }
+    },
+    {
+      path: 'addProductCate',
+      name: 'addProductCate',
+      component: Layout,
+      meta: { title: '添加商品分类' },
+      hidden: true
+    },
+    {
+      path: 'updateProductCate',
+      name: 'updateProductCate',
+      component: Layout,
+      meta: { title: '修改商品分类' },
+      hidden: true
+    },
+    {
+      path: 'productAttr',
+      name: 'productAttr',
+      component: Layout,
+      meta: { title: '商品类型', icon: 'product-attr' }
+    },
+    {
+      path: 'productAttrList',
+      name: 'productAttrList',
+      component: Layout,
+      meta: { title: '商品属性列表' },
+      hidden: true
+    },
+    {
+      path: 'addProductAttr',
+      name: 'addProductAttr',
+      component: Layout,
+      meta: { title: '添加商品属性' },
+      hidden: true
+    },
+    {
+      path: 'updateProductAttr',
+      name: 'updateProductAttr',
+      component: Layout,
+      meta: { title: '修改商品属性' },
+      hidden: true
+    },
+    {
+      path: 'brand',
+      name: 'brand',
+      component: Layout,
+      meta: { title: '品牌管理', icon: 'product-brand' }
+    },
+    {
+      path: 'addBrand',
+      name: 'addBrand',
+      component: Layout,
+      meta: { title: '添加品牌' },
+      hidden: true
+    },
+    {
+      path: 'updateBrand',
+      name: 'updateBrand',
+      component: Layout,
+      meta: { title: '编辑品牌' },
+      hidden: true
+    }
+    ]
+  },
+  {
+    path: '/oms',
+    component: Layout,
+    redirect: '/oms/order',
+    name: 'oms',
+    meta: { title: '订单', icon: 'order' },
+    children: [
+      {
+        path: 'order',
+        name: 'order',
+        component: Layout,
+        meta: { title: '订单列表', icon: 'product-list' }
+      },
+      {
+        path: 'orderDetail',
+        name: 'orderDetail',
+        component: Layout,
+        meta: { title: '订单详情' },
+        hidden: true
+      },
+      {
+        path: 'deliverOrderList',
+        name: 'deliverOrderList',
+        component: Layout,
+        meta: { title: '发货列表' },
+        hidden: true
+      },
+      {
+        path: 'orderSetting',
+        name: 'orderSetting',
+        component: Layout,
+        meta: { title: '订单设置', icon: 'order-setting' }
+      },
+      {
+        path: 'returnApply',
+        name: 'returnApply',
+        component: Layout,
+        meta: { title: '退货申请处理', icon: 'order-return' }
+      },
+      {
+        path: 'returnReason',
+        name: 'returnReason',
+        component: Layout,
+        meta: { title: '退货原因设置', icon: 'order-return-reason' }
+      },
+      {
+        path: 'returnApplyDetail',
+        name: 'returnApplyDetail',
+        component: Layout,
+        meta: { title: '退货原因详情' },
+        hidden: true
+      }
+    ]
+  },
+  {
+    path: '/sms',
+    component: Layout,
+    redirect: '/sms/coupon',
+    name: 'sms',
+    meta: { title: '营销', icon: 'sms' },
+    children: [
+      {
+        path: 'flash',
+        name: 'flash',
+        component: Layout,
+        meta: { title: '秒杀活动列表', icon: 'sms-flash' }
+      },
+      {
+        path: 'flashSession',
+        name: 'flashSession',
+        component: Layout,
+        meta: { title: '秒杀时间段列表' },
+        hidden: true
+      },
+      {
+        path: 'selectSession',
+        name: 'selectSession',
+        component: Layout,
+        meta: { title: '秒杀时间段选择' },
+        hidden: true
+      },
+      {
+        path: 'flashProductRelation',
+        name: 'flashProductRelation',
+        component: Layout,
+        meta: { title: '秒杀商品列表' },
+        hidden: true
+      },
+      {
+        path: 'coupon',
+        name: 'coupon',
+        component: Layout,
+        meta: { title: '优惠券列表', icon: 'sms-coupon' }
+      },
+      {
+        path: 'addCoupon',
+        name: 'addCoupon',
+        component: Layout,
+        meta: { title: '添加优惠券' },
+        hidden: true
+      },
+      {
+        path: 'updateCoupon',
+        name: 'updateCoupon',
+        component: Layout,
+        meta: { title: '修改优惠券' },
+        hidden: true
+      },
+      {
+        path: 'couponHistory',
+        name: 'couponHistory',
+        component: Layout,
+        meta: { title: '优惠券领取详情' },
+        hidden: true
+      },
+      {
+        path: 'brand',
+        name: 'homeBrand',
+        component: Layout,
+        meta: { title: '品牌推荐', icon: 'product-brand' }
+      },
+      {
+        path: 'new',
+        name: 'homeNew',
+        component: Layout,
+        meta: { title: '新品推荐', icon: 'sms-new' }
+      },
+      {
+        path: 'hot',
+        name: 'homeHot',
+        component: Layout,
+        meta: { title: '人气推荐', icon: 'sms-hot' }
+      },
+      {
+        path: 'subject',
+        name: 'homeSubject',
+        component: Layout,
+        meta: { title: '专题推荐', icon: 'sms-subject' }
+      },
+      {
+        path: 'advertise',
+        name: 'homeAdvertise',
+        component: Layout,
+        meta: { title: '广告列表', icon: 'sms-ad' }
+      },
+      {
+        path: 'addAdvertise',
+        name: 'addHomeAdvertise',
+        component: Layout,
+        meta: { title: '添加广告' },
+        hidden: true
+      },
+      {
+        path: 'updateAdvertise',
+        name: 'updateHomeAdvertise',
+        component: Layout,
+        meta: { title: '编辑广告' },
+        hidden: true
+      }
+    ]
+  },
+  {
+    path: '/ums',
+    component: Layout,
+    redirect: '/ums/admin',
+    name: 'ums',
+    meta: { title: '权限', icon: 'ums' },
+    children: [
+      {
+        path: 'admin',
+        name: 'admin',
+        component: Layout,
+        meta: { title: '用户列表', icon: 'ums-admin' }
+      },
+      {
+        path: 'role',
+        name: 'role',
+        component: Layout,
+        meta: { title: '角色列表', icon: 'ums-role' }
+      },
+      {
+        path: 'allocMenu',
+        name: 'allocMenu',
+        component: Layout,
+        meta: { title: '分配菜单' },
+        hidden: true
+      },
+      {
+        path: 'allocResource',
+        name: 'allocResource',
+        component: Layout,
+        meta: { title: '分配资源' },
+        hidden: true
+      },
+      {
+        path: 'menu',
+        name: 'menu',
+        component: Layout,
+        meta: { title: '菜单列表', icon: 'ums-menu' }
+      },
+      {
+        path: 'addMenu',
+        name: 'addMenu',
+        component: Layout,
+        meta: { title: '添加菜单' },
+        hidden: true
+      },
+      {
+        path: 'updateMenu',
+        name: 'updateMenu',
+        component: Layout,
+        meta: { title: '修改菜单' },
+        hidden: true
+      },
+      {
+        path: 'resource',
+        name: 'resource',
+        component: Layout,
+        meta: { title: '资源列表', icon: 'ums-resource' }
+      },
+      {
+        path: 'resourceCategory',
+        name: 'resourceCategory',
+        component: Layout,
+        meta: { title: '资源分类' },
+        hidden: true
+      }
+    ]
+  },
+  { path: '*', redirect: '/404', hidden: true }
+]
+
 
 const router = new VueRouter({
   mode: "history",

@@ -36,6 +36,7 @@ router.beforeEach((to, from, next) => {
 
           // 如果 addRoute 并未完成，路由守卫会一层一层的执行执行，直到 addRoute 完成，找到对应的路由
           next({ ...to, replace: true });
+
         });
       } else {
         next();

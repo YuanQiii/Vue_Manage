@@ -9,6 +9,7 @@ import Vuex from "vuex";
 
 import user from "./modules/user";
 import pemission from "./modules/pemission";
+import app from './modules/app'
 
 Vue.use(Vuex);
 
@@ -20,5 +21,6 @@ export default new Vuex.Store({
   modules: {
     user,
     pemission,
+    app
   },
 });

@@ -9,15 +9,25 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
+import 'normalize.css/normalize.css'
+
 import '@/icons/index'
 import '@/utils/permission'
+
+import VCharts from 'v-charts'
 
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 
+
 Vue.use(ElementUI);
+Vue.use(VCharts);
 
 Vue.config.productionTip = false;
+
+Vue.filter("moneyFormat", (value) => {
+  return "¥" + Number(value).toFixed(2);
+});
 
 new Vue({
   router,

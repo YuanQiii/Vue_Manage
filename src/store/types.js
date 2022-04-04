@@ -13,3 +13,5 @@ export const SET_AVATAR = "SET_AVATAR";
 export const SET_ROLES = "SET_ROLES";
 
 export const GENERATE_ROUTES = "GENERATE_ROUTES";
+
+export const UPDATE_SIDEBAR_STATUS = "UPDATE_SIDEBAR_STATUS";

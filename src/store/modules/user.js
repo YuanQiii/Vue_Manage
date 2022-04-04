@@ -7,8 +7,10 @@
 
 import { SET_TOKEN, SET_NAME, SET_AVATAR, SET_ROLES } from "../types";
 
+import { getToken } from "@/utils/auth";
+
 const state = {
-  token: "",
+  token: getToken(),
   name: "",
   avatar: "",
   roles: [],
