@@ -8,8 +8,8 @@ import request from "@/utils/request";
 
 // 品牌筛选分类
 export function brandListApi() {
-    return request({
-        url: "/brandList",
-        method: "get"
-    });
+  return request({
+    url: "/brandList",
+    method: "get",
+  });
 }

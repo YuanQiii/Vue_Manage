@@ -1,3 +1,9 @@
+<!--
+ * @Autor: YuanQiii
+ * @GitHub: https://github.com/YuanQiii
+ * @Date: 2022-04-06 13:41:24
+ * @FilePath: \vue_manage\src\components\Breadcrumb\Breadcrumb.vue
+-->
 <template>
   <div class="breadcrumb">
     <el-breadcrumb separator="/">

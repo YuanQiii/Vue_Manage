@@ -1,3 +1,9 @@
+<!--
+ * @Autor: YuanQiii
+ * @GitHub: https://github.com/YuanQiii
+ * @Date: 2022-04-06 13:41:24
+ * @FilePath: \vue_manage\src\views\layout\components\navbar\Navbar.vue
+-->
 <template>
   <div class="navbar">
     <hamburger
@@ -23,8 +29,9 @@
 
 <script>
 import Hamburger from "@/components/hamburger/Hamburger.vue";
-import { mapMutations, mapState } from "vuex";
 import Breadcrumb from "@/components/breadcrumb/Breadcrumb.vue";
+
+import { mapMutations, mapState } from "vuex";
 import { removeToken } from "@/utils/auth";
 export default {
   components: { Hamburger, Breadcrumb },
