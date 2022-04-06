@@ -124,6 +124,7 @@
       <el-form-item v-show="value.promotionType === 2">
         <div
           v-for="(item, index) in value.memberPriceList"
+          :key="index"
           :class="{ littleMargin: index !== 0 }"
         >
           {{ item.memberLevelName }}：
@@ -191,7 +192,6 @@
         </el-table>
       </el-form-item>
 
-      <!-- 下一步 -->
       <el-form-item style="text-align: center">
         <el-button size="medium" @click="handlePrev"
           >上一步，填写商品信息</el-button
@@ -324,6 +324,7 @@ export default {
       this.$emit("prevStep");
     },
     handleNext() {
+      console.log(321);
       this.$emit("nextStep");
     },
   },

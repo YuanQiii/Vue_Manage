@@ -20,7 +20,7 @@
           @change="handleProductCateChange"
         >
           <el-option
-            v-for="item in productAttributeCategoryOptions"
+            v-for="item in productAttrCateOptions"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -31,7 +31,7 @@
 
       <el-form-item label="商品规格：">
         <el-card shadow="never" class="cardBg">
-          <div v-for="(productAttr, idx) in selectProductAttr">
+          <div v-for="(productAttr, idx) in selectProductAttr" :key="idx">
             {{ productAttr.name }}：
             <el-checkbox-group
               v-if="productAttr.handAddStatus === 0"
@@ -48,6 +48,7 @@
               <el-checkbox-group v-model="selectProductAttr[idx].values">
                 <div
                   v-for="(item, index) in selectProductAttr[idx].options"
+                  :key="index"
                   style="display: inline-block"
                   class="littleMarginLeft"
                 >
@@ -73,79 +74,13 @@
             </div>
           </div>
         </el-card>
-
-        <el-table
-          style="width: 100%; margin-top: 20px"
-          :data="value.skuStockList"
-          border
-        >
-          <el-table-column
-            v-for="(item, index) in selectProductAttr"
-            :label="item.name"
-            :key="item.id"
-            align="center"
-          >
-            <template slot-scope="scope">
-              {{ getProductSkuSp(scope.row, index) }}
-            </template>
-          </el-table-column>
-          <el-table-column label="销售价格" width="80" align="center">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.price"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column label="商品库存" width="80" align="center">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.stock"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column label="库存预警值" width="80" align="center">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.lowStock"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column label="SKU编号" align="center">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.skuCode"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="80" align="center">
-            <template slot-scope="scope">
-              <el-button
-                type="text"
-                @click="handleRemoveProductSku(scope.$index, scope.row)"
-                >删除
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-
-        <el-button
-          type="primary"
-          style="margin-top: 20px"
-          @click="handleRefreshProductSkuList"
-          >刷新列表
-        </el-button>
-
-        <el-button
-          type="primary"
-          style="margin-top: 20px"
-          @click="handleSyncProductSkuPrice"
-          >同步价格
-        </el-button>
-
-        <el-button
-          type="primary"
-          style="margin-top: 20px"
-          @click="handleSyncProductSkuStock"
-          >同步库存
-        </el-button>
       </el-form-item>
 
       <el-form-item label="商品参数：">
         <el-card shadow="never" class="cardBg">
           <div
             v-for="(item, index) in selectProductParam"
+            :key="index"
             :class="{ littleMarginTop: index !== 0 }"
           >
             <div class="paramInputLabel">{{ item.name }}:</div>
@@ -188,7 +123,11 @@
 </template>
 
 <script>
-import { productFilterCateApi } from "@/api/product";
+import {
+  productAttrCateListApi,
+  productSpecificationsApi,
+  productParamsApi,
+} from "@/api/product";
 import SingleUpload from "@/components/upload/singleUpload";
 import MultiUpload from "@/components/upload/multiUpload";
 
@@ -207,7 +146,7 @@ export default {
       //编辑模式时是否初始化成功
       hasEditCreated: false,
       //商品属性分类下拉选项
-      productAttributeCategoryOptions: [],
+      productAttrCateOptions: [],
       //选中的商品属性
       selectProductAttr: [],
       //选中的商品参数
@@ -298,69 +237,19 @@ export default {
     },
 
     getProductAttrCateList() {
-      productFilterCateApi().then((response) => {
-        this.productAttributeCategoryOptions = [];
-        let list = response.data.list;
-        for (let i = 0; i < list.length; i++) {
-          this.productAttributeCategoryOptions.push({
-            label: list[i].name,
-            value: list[i].id,
+      productAttrCateListApi().then((response) => {
+        let temp = [];
+        response.data.list.forEach((element) => {
+          temp.push({
+            label: element.name,
+            value: element.id,
           });
-        }
+        });
+        this.productAttrCateOptions = temp;
       });
     },
 
-    // getProductAttrList(type, cid) {
-    //   let param = { pageNum: 1, pageSize: 100, type: type };
-    //   fetchProductAttrList(cid, param).then((response) => {
-    //     let list = response.data.list;
-    //     if (type === 0) {
-    //       this.selectProductAttr = [];
-    //       for (let i = 0; i < list.length; i++) {
-    //         let options = [];
-    //         let values = [];
-    //         if (this.isEdit) {
-    //           if (list[i].handAddStatus === 1) {
-    //             //编辑状态下获取手动添加编辑属性
-    //             options = this.getEditAttrOptions(list[i].id);
-    //           }
-    //           //编辑状态下获取选中属性
-    //           values = this.getEditAttrValues(i);
-    //         }
-    //         this.selectProductAttr.push({
-    //           id: list[i].id,
-    //           name: list[i].name,
-    //           handAddStatus: list[i].handAddStatus,
-    //           inputList: list[i].inputList,
-    //           values: values,
-    //           options: options,
-    //         });
-    //       }
-    //       if (this.isEdit) {
-    //         //编辑模式下刷新商品属性图片
-    //         this.refreshProductAttrPics();
-    //       }
-    //     } else {
-    //       this.selectProductParam = [];
-    //       for (let i = 0; i < list.length; i++) {
-    //         let value = null;
-    //         if (this.isEdit) {
-    //           //编辑模式下获取参数属性
-    //           value = this.getEditParamValue(list[i].id);
-    //         }
-    //         this.selectProductParam.push({
-    //           id: list[i].id,
-    //           name: list[i].name,
-    //           value: value,
-    //           inputType: list[i].inputType,
-    //           inputList: list[i].inputList,
-    //         });
-    //       }
-    //     }
-    //   });
-    // },
     //获取设置的可手动添加属性值
-
     getEditAttrOptions(id) {
       let options = [];
       for (let i = 0; i < this.value.productAttributeValueList.length; i++) {
@@ -415,8 +304,8 @@ export default {
       }
     },
     handleProductCateChange(value) {
-      // this.getProductAttrList(0, value);
-      // this.getProductAttrList(1, value);
+      productSpecificationsApi(value);
+      productParamsApi(value);
     },
     getInputListArr(inputList) {
       return inputList.split(",");
@@ -452,72 +341,6 @@ export default {
       } else {
         return null;
       }
-    },
-    handleRefreshProductSkuList() {
-      this.$confirm("刷新列表将导致sku信息重新生成，是否要刷新", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      }).then(() => {
-        this.refreshProductAttrPics();
-        this.refreshProductSkuList();
-      });
-    },
-    handleSyncProductSkuPrice() {
-      this.$confirm("将同步第一个sku的价格到所有sku,是否继续", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      }).then(() => {
-        if (
-          this.value.skuStockList !== null &&
-          this.value.skuStockList.length > 0
-        ) {
-          let tempSkuList = [];
-          tempSkuList = tempSkuList.concat(
-            tempSkuList,
-            this.value.skuStockList
-          );
-          let price = this.value.skuStockList[0].price;
-          for (let i = 0; i < tempSkuList.length; i++) {
-            tempSkuList[i].price = price;
-          }
-          this.value.skuStockList = [];
-          this.value.skuStockList = this.value.skuStockList.concat(
-            this.value.skuStockList,
-            tempSkuList
-          );
-        }
-      });
-    },
-    handleSyncProductSkuStock() {
-      this.$confirm("将同步第一个sku的库存到所有sku,是否继续", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      }).then(() => {
-        if (
-          this.value.skuStockList !== null &&
-          this.value.skuStockList.length > 0
-        ) {
-          let tempSkuList = [];
-          tempSkuList = tempSkuList.concat(
-            tempSkuList,
-            this.value.skuStockList
-          );
-          let stock = this.value.skuStockList[0].stock;
-          let lowStock = this.value.skuStockList[0].lowStock;
-          for (let i = 0; i < tempSkuList.length; i++) {
-            tempSkuList[i].stock = stock;
-            tempSkuList[i].lowStock = lowStock;
-          }
-          this.value.skuStockList = [];
-          this.value.skuStockList = this.value.skuStockList.concat(
-            this.value.skuStockList,
-            tempSkuList
-          );
-        }
-      });
     },
     refreshProductSkuList() {
       this.value.skuStockList = [];

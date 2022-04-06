@@ -78,7 +78,7 @@ export default {
       active: 0,
 
       // 默认产品属性
-      defaultProductParam: {
+      productParam: {
         id: null,
         albumPics: "",
         brandId: null,
@@ -163,8 +163,6 @@ export default {
         verifyStatus: 0,
         weight: 0,
       },
-      productParam: Object.assign({}, this.defaultProductParam),
-
       // 展示组件状态
       showStatus: [true, false, false, false],
     };
@@ -184,9 +182,9 @@ export default {
     hideAll() {
       let temp = [];
       this.showStatus.forEach((element) => {
-        temp.push = false;
+        temp.push(false);
       });
-      this.showStatus = false;
+      this.showStatus = temp;
     },
 
     // 上一步

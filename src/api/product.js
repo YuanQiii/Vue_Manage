@@ -33,10 +33,10 @@ export function productDetailApi(id) {
   });
 }
 
-// 商品属性获取
-export function productAttributeListApi() {
+// 商品属性分类获取
+export function productAttrCateListApi() {
   return request({
-    url: "/productAttributeList",
+    url: "/productAttrCateList",
     method: "get",
   });
 }
@@ -46,5 +46,27 @@ export function productSubjectListApi() {
   return request({
     url: "/productSubjectList",
     method: "get",
+  });
+}
+
+// 商品规格
+export function productSpecificationsApi(id) {
+  return request({
+    url: "/productSpecifications",
+    method: "get",
+    params: {
+      id
+    }
+  });
+}
+
+// 商品参数
+export function productParamsApi(id) {
+  return request({
+    url: "/productParams",
+    method: "get",
+    params: {
+      id
+    }
   });
 }
