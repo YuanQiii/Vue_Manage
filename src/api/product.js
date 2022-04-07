@@ -14,6 +14,17 @@ export function productFilterCateApi() {
   });
 }
 
+// 商品子类分类
+export function productChildCateApi(id) {
+  return request({
+    url: "/productChildCate",
+    method: "get",
+    params: {
+      id,
+    },
+  });
+}
+
 // 商品列表获取
 export function productListApi() {
   return request({
@@ -55,8 +66,8 @@ export function productSpecificationsApi(id) {
     url: "/productSpecifications",
     method: "get",
     params: {
-      id
-    }
+      id,
+    },
   });
 }
 
@@ -66,7 +77,7 @@ export function productParamsApi(id) {
     url: "/productParams",
     method: "get",
     params: {
-      id
-    }
+      id,
+    },
   });
 }

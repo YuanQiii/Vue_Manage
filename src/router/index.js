@@ -29,8 +29,15 @@ const Layout = () => import("@/views/layout/Layout.vue");
 const Home = () => import("@/views/home/Home.vue");
 
 const ProductList = () => import("@/views/pms/list/ProductList.vue");
+
 const AddProduct = () => import("@/views/pms/detail/AddProduct.vue");
 const UpdateProduct = () => import("@/views/pms/detail/UpdateProduct.vue");
+
+const ProductCateList = () =>
+  import("@/views/pms/category/ProductCateList.vue");
+const AddProductCate = () => import("@/views/pms/category/AddProductCate.vue");
+const UpdateProductCate = () =>
+  import("@/views/pms/category/UpdateProductCate.vue");
 
 export const constantRouterMap = [
   {
@@ -107,7 +114,7 @@ export const asyncRouterMap = [
       {
         path: "productCate",
         name: "productCate",
-        component: Layout,
+        component: ProductCateList,
         meta: {
           title: "商品分类",
           icon: "product-cate",
@@ -116,7 +123,7 @@ export const asyncRouterMap = [
       {
         path: "addProductCate",
         name: "addProductCate",
-        component: Layout,
+        component: AddProductCate,
         meta: {
           title: "添加商品分类",
         },
@@ -125,7 +132,7 @@ export const asyncRouterMap = [
       {
         path: "updateProductCate",
         name: "updateProductCate",
-        component: Layout,
+        component: UpdateProductCate,
         meta: {
           title: "修改商品分类",
         },

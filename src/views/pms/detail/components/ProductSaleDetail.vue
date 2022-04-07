@@ -324,7 +324,6 @@ export default {
       this.$emit("prevStep");
     },
     handleNext() {
-      console.log(321);
       this.$emit("nextStep");
     },
   },

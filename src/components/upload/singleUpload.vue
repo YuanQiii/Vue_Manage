@@ -1,5 +1,4 @@
 <template>
-   
   <div>
     <el-upload
       :action="useOss ? ossUploadUrl : minioUploadUrl"
@@ -24,8 +23,6 @@
   </div>
 </template>
 <script>
-// import {policy} from '@/api/oss'
-
 export default {
   name: "singleUpload",
   props: {

@@ -216,14 +216,12 @@ export default {
           this.$message({
             type: "success",
             message: "提交成功",
-            duration: 1000,
           });
           this.$router.back();
         } else {
           this.$message({
             type: "success",
             message: "提交成功",
-            duration: 1000,
           });
           location.reload();
         }
@@ -232,10 +230,19 @@ export default {
   },
 };
 </script>
-<style>
-.form-container {
-  width: 800px;
+
+<style lang="less" scoped>
+.product-detail {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  .form-container {
+    width: 800px;
+    padding: 40px;
+    padding-bottom: 0;
+  }
 }
 </style>
+
 
 

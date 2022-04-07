@@ -205,8 +205,8 @@ export default {
     handleEditCreated() {
       // 更新商品时，赋值分类选择项
       if (this.value.productCategoryId != null) {
-        this.selectProductCateValue.push(this.value.cateParentId);
-        this.selectProductCateValue.push(this.value.productCategoryId);
+        let temp = [this.value.cateParentId, this.value.productCategoryId];
+        this.selectProductCateValue = temp;
       }
       this.hasEditCreated = true;
     },
