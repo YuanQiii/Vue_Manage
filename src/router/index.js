@@ -39,6 +39,11 @@ const AddProductCate = () => import("@/views/pms/category/AddProductCate.vue");
 const UpdateProductCate = () =>
   import("@/views/pms/category/UpdateProductCate.vue");
 
+const ProductBrandList = () => import("@/views/pms/brand/ProductBrandList.vue");
+const AddProductBrand = () => import("@/views/pms/brand/AddProductBrand.vue");
+const UpdateProductBrand = () =>
+  import("@/views/pms/brand/UpdateProductBrand.vue");
+
 export const constantRouterMap = [
   {
     path: "/login",
@@ -177,7 +182,7 @@ export const asyncRouterMap = [
       {
         path: "brand",
         name: "brand",
-        component: Layout,
+        component: ProductBrandList,
         meta: {
           title: "品牌管理",
           icon: "product-brand",
@@ -186,7 +191,7 @@ export const asyncRouterMap = [
       {
         path: "addBrand",
         name: "addBrand",
-        component: Layout,
+        component: AddProductBrand,
         meta: {
           title: "添加品牌",
         },
@@ -195,7 +200,7 @@ export const asyncRouterMap = [
       {
         path: "updateBrand",
         name: "updateBrand",
-        component: Layout,
+        component: UpdateProductBrand,
         meta: {
           title: "编辑品牌",
         },

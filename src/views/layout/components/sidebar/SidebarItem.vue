@@ -1,3 +1,9 @@
+<!--
+ * @Autor: YuanQiii
+ * @GitHub: https://github.com/YuanQiii
+ * @Date: 2022-04-06 13:41:24
+ * @FilePath: \vue_manage\src\views\layout\components\sidebar\SidebarItem.vue
+-->
 <template>
   <div class="sidebar-item">
     <el-submenu :index="route.path" v-if="route.children.length != 1">
@@ -66,4 +72,10 @@ export default {
     margin-right: 20px;
   }
 }
+// .el-menu-item {
+//   background-color: #1f2d3d !important;
+// }
+// .el-menu-item:hover {
+//   background-color: #001528 !important;
+// }
 </style>

@@ -5,14 +5,26 @@
  * @FilePath: \vue_manage\src\views\pms\category\AddProductCate.vue
 -->
 <template>
-  <div class="add-product-cate"></div>
+  <div class="add-product-cate">
+    <product-cate-detail :isEdit="false" />
+  </div>
 </template>
 
 <script>
+import ProductCateDetail from "./components/ProductCateDetail.vue";
 export default {
   name: "AddProductCate",
+  components: {
+    ProductCateDetail,
+  },
 };
 </script>
 
-<style>
+
+ <style>
+.add-product-cate {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
 </style>

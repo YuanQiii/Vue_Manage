@@ -133,12 +133,11 @@ import {
   productSpecificationsApi,
   productParamsApi,
 } from "@/api/product";
-import SingleUpload from "@/components/upload/singleUpload";
 import MultiUpload from "@/components/upload/multiUpload";
 
 export default {
   name: "ProductAttrDetail",
-  components: { SingleUpload, MultiUpload },
+  components: { MultiUpload },
   props: {
     value: Object,
     isEdit: {
