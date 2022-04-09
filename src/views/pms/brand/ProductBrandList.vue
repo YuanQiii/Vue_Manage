@@ -5,7 +5,6 @@
  * @FilePath: \vue_manage\src\views\pms\brand\ProductBrandList.vue
 -->
 <template>
-   
   <div class="brand-list">
     <el-card class="filter-container" shadow="never">
       <div>
@@ -49,7 +48,7 @@
     <div class="table-container">
       <el-table
         ref="brandTable"
-        :data="list"
+        :data="currentList"
         style="width: 100%"
         @selection-change="handleSelectionChange"
         v-loading="listLoading"
@@ -92,24 +91,6 @@
               v-model="scope.row.showStatus"
             >
             </el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column label="相关" width="220" align="center">
-          <template slot-scope="scope">
-            <span>商品：</span>
-            <el-button
-              size="mini"
-              type="text"
-              @click="getProductList(scope.$index, scope.row)"
-              >100
-            </el-button>
-            <span>评价：</span>
-            <el-button
-              size="mini"
-              type="text"
-              @click="getProductCommentList(scope.$index, scope.row)"
-              >1000
-            </el-button>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
@@ -160,15 +141,20 @@
         :page-size="pageConfig.pageSize"
         :page-sizes="[5, 10, 15]"
         :current-page.sync="pageConfig.pageNum"
-        :total="total"
+        :total="brandList.length"
       >
       </el-pagination>
     </div>
   </div>
 </template>
 <script>
+import { brandListApi } from "@/api/brand";
+
 export default {
   name: "ProductBrandList",
+  created() {
+    this.getBrandList();
+  },
   data() {
     return {
       operates: [
@@ -185,119 +171,114 @@ export default {
       pageConfig: {
         keyword: null,
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 5,
       },
-      list: null,
-      total: null,
+      brandList: [],
       listLoading: true,
       multipleSelection: [],
     };
   },
-  created() {
-    this.getList();
+  computed: {
+    currentList() {
+      let start = this.pageConfig.pageSize * (this.pageConfig.pageNum - 1);
+      let end = this.pageConfig.pageSize * this.pageConfig.pageNum;
+      let max = this.pageConfig.length;
+      end = end > max ? max : end;
+      return this.brandList.slice(start, end);
+    },
   },
   methods: {
-    getList() {
+    // 获取品牌数据
+    getBrandList() {
       this.listLoading = true;
-      fetchList(this.pageConfig).then((response) => {
+      brandListApi().then((response) => {
         this.listLoading = false;
-        this.list = response.data.list;
-        this.total = response.data.total;
-        this.totalPage = response.data.totalPage;
-        this.pageSize = response.data.pageSize;
+        this.brandList = response.data;
       });
     },
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
+
+    // 品牌选择
+    handleSelectionChange(value) {
+      this.multipleSelection = value;
     },
-    handleUpdate(index, row) {
-      this.$router.push({ path: "/pms/updateBrand", query: { id: row.id } });
-    },
+
+    // 删除
     handleDelete(index, row) {
       this.$confirm("是否要删除该品牌", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        deleteBrand(row.id).then((response) => {
-          this.$message({
-            message: "删除成功",
-            type: "success",
-            duration: 1000,
-          });
-          this.getList();
+        let temp = [];
+        this.brandList.forEach((element) => {
+          if (element.id != row.id) {
+            temp.push(element);
+          }
+        });
+        this.brandList = temp;
+
+        this.$message({
+          message: "删除成功",
+          type: "success",
         });
       });
     },
-    getProductList(index, row) {
-      console.log(index, row);
-    },
-    getProductCommentList(index, row) {
-      console.log(index, row);
-    },
+
+    // 品牌制造商
     handleFactoryStatusChange(index, row) {
-      var data = new URLSearchParams();
-      data.append("ids", row.id);
-      data.append("factoryStatus", row.factoryStatus);
-      updateFactoryStatus(data)
-        .then((response) => {
-          this.$message({
-            message: "修改成功",
-            type: "success",
-            duration: 1000,
-          });
-        })
-        .catch((error) => {
-          if (row.factoryStatus === 0) {
-            row.factoryStatus = 1;
-          } else {
-            row.factoryStatus = 0;
-          }
-        });
+      this.$message({
+        message: "品牌制造商",
+        type: "info",
+      });
     },
+
+    // 是否显示
     handleShowStatusChange(index, row) {
-      let data = new URLSearchParams();
-      data.append("ids", row.id);
-      data.append("showStatus", row.showStatus);
-      updateShowStatus(data)
-        .then((response) => {
-          this.$message({
-            message: "修改成功",
-            type: "success",
-            duration: 1000,
-          });
-        })
-        .catch((error) => {
-          if (row.showStatus === 0) {
-            row.showStatus = 1;
-          } else {
-            row.showStatus = 0;
-          }
-        });
+      console.log(this.brandList);
     },
-    handleSizeChange(val) {
+
+    // 每页显示条数
+    handleSizeChange(value) {
       this.pageConfig.pageNum = 1;
-      this.pageConfig.pageSize = val;
-      this.getList();
+      this.pageConfig.pageSize = value;
     },
-    handleCurrentChange(val) {
-      this.pageConfig.pageNum = val;
-      this.getList();
+
+    // 页码
+    handleCurrentChange(value) {
+      this.pageConfig.pageNum = value;
     },
+
+    // 查询
     searchBrandList() {
       this.pageConfig.pageNum = 1;
-      this.getList();
+      if (this.pageConfig.keyword) {
+        let temp = [];
+        this.brandList.forEach((element) => {
+          if (
+            element.name.includes(this.pageConfig.keyword) ||
+            element.firstLetter == this.pageConfig.keyword.toUpperCase()
+          ) {
+            temp.push(element);
+          }
+        });
+        this.brandList = temp;
+      } else {
+        this.getBrandList();
+      }
     },
+
+    // 批量操作
     handleBatchOperate() {
       console.log(this.multipleSelection);
+
       if (this.multipleSelection < 1) {
         this.$message({
           message: "请选择一条记录",
           type: "warning",
-          duration: 1000,
         });
         return;
       }
+
       let showStatus = 0;
       if (this.operateType === "showBrand") {
         showStatus = 1;
@@ -307,26 +288,34 @@ export default {
         this.$message({
           message: "请选择批量操作类型",
           type: "warning",
-          duration: 1000,
         });
         return;
       }
-      let ids = [];
-      for (let i = 0; i < this.multipleSelection.length; i++) {
-        ids.push(this.multipleSelection[i].id);
-      }
-      let data = new URLSearchParams();
-      data.append("ids", ids);
-      data.append("showStatus", showStatus);
-      updateShowStatus(data).then((response) => {
-        this.getList();
-        this.$message({
-          message: "修改成功",
-          type: "success",
-          duration: 1000,
+
+      let temp = [];
+      this.brandList.forEach((element) => {
+        this.multipleSelection.forEach((item) => {
+          if (element.id == item.id) {
+            element.showStatus = showStatus;
+          }
         });
+
+        temp.push(element);
+      });
+      this.brandList = temp;
+
+      this.$message({
+        message: "修改成功",
+        type: "success",
       });
     },
+
+    // 跳转到更新页面
+    handleUpdate(index, row) {
+      this.$router.push({ path: "/pms/updateBrand", query: { id: row.id } });
+    },
+
+    // 跳转到添加页面
     addBrand() {
       this.$router.push({ path: "/pms/addBrand" });
     },
@@ -334,5 +323,8 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.el-icon-search {
+  margin-right: 5px;
+}
 </style>
 
