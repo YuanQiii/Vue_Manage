@@ -12,6 +12,7 @@
         <span>筛选搜索</span>
         <el-button
           style="float: right"
+          class="btn"
           @click="searchBrandList()"
           type="primary"
           size="small"
@@ -111,39 +112,41 @@
       </el-table>
     </div>
 
-    <div class="batch-operate-container">
-      <el-select size="small" v-model="operateType" placeholder="批量操作">
-        <el-option
-          v-for="item in operates"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+    <div class="bottom">
+      <div class="batch-operate-container">
+        <el-select size="small" v-model="operateType" placeholder="批量操作">
+          <el-option
+            v-for="item in operates"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+        <el-button
+          style="margin-left: 20px"
+          class="search-button"
+          @click="handleBatchOperate()"
+          type="primary"
+          size="small"
         >
-        </el-option>
-      </el-select>
-      <el-button
-        style="margin-left: 20px"
-        class="search-button"
-        @click="handleBatchOperate()"
-        type="primary"
-        size="small"
-      >
-        确定
-      </el-button>
-    </div>
+          确定
+        </el-button>
+      </div>
 
-    <div class="pagination-container">
-      <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        layout="total, sizes,prev, pager, next,jumper"
-        :page-size="pageConfig.pageSize"
-        :page-sizes="[5, 10, 15]"
-        :current-page.sync="pageConfig.pageNum"
-        :total="brandList.length"
-      >
-      </el-pagination>
+      <div class="pagination-container">
+        <el-pagination
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          layout="total, sizes,prev, pager, next,jumper"
+          :page-size="pageConfig.pageSize"
+          :page-sizes="[5, 10, 15]"
+          :current-page.sync="pageConfig.pageNum"
+          :total="brandList.length"
+        >
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -323,8 +326,31 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.el-icon-search {
-  margin-right: 5px;
+.brand-list {
+  margin-left: 20px;
+  margin-top: 40px;
+  .el-icon-search {
+    margin-right: 5px;
+  }
+  .el-icon-tickets {
+    margin-right: 5px;
+  }
+  .btn {
+    margin-top: 30px;
+  }
+  .btn-add {
+    float: right;
+  }
+  .operate-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .bottom {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 40px;
+  }
 }
 </style>
 

@@ -48,31 +48,22 @@
             <el-radio :label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit('brandFrom')"
-            >提交</el-button
-          >
-          <el-button v-if="!isEdit" @click="resetForm('brandFrom')"
-            >重置</el-button
-          >
-        </el-form-item>
       </el-form>
+      <div class="btn">
+        <el-button type="primary" @click="onSubmit('brandFrom')"
+          >提交</el-button
+        >
+        <el-button v-if="!isEdit" @click="resetForm('brandFrom')"
+          >重置</el-button
+        >
+      </div>
     </el-card>
   </div>
 </template>
 <script>
-import { createBrand, getBrand, updateBrand } from "@/api/brand";
 import SingleUpload from "@/components/upload/SingleUpload";
-const defaultBrand = {
-  bigPic: "",
-  brandStory: "",
-  factoryStatus: 0,
-  firstLetter: "",
-  logo: "",
-  name: "",
-  showStatus: 0,
-  sort: 0,
-};
+import { brandListApi } from "@/api/brand";
+
 export default {
   name: "ProductBrandDetail",
   components: { SingleUpload },
@@ -84,7 +75,26 @@ export default {
   },
   data() {
     return {
-      brand: Object.assign({}, defaultBrand),
+      defaultBrand: {
+        bigPic: "",
+        brandStory: "",
+        factoryStatus: 0,
+        firstLetter: "",
+        logo: "",
+        name: "",
+        showStatus: 0,
+        sort: 0,
+      },
+      brand: {
+        bigPic: "",
+        brandStory: "",
+        factoryStatus: 0,
+        firstLetter: "",
+        logo: "",
+        name: "",
+        showStatus: 0,
+        sort: 0,
+      },
       rules: {
         name: [
           { required: true, message: "请输入品牌名称", trigger: "blur" },
@@ -101,15 +111,25 @@ export default {
     };
   },
   created() {
-    if (this.isEdit) {
-      getBrand(this.$route.query.id).then((response) => {
-        this.brand = response.data;
-      });
-    } else {
-      this.brand = Object.assign({}, defaultBrand);
-    }
+    this.getBrand();
   },
   methods: {
+    // 获取品牌数据
+    getBrand() {
+      if (this.isEdit) {
+        brandListApi().then((response) => {
+          response.data.forEach((element) => {
+            if (element.id == this.$route.query.id) {
+              this.brand = element;
+            }
+          });
+        });
+      } else {
+        this.brand = this.defaultBrand;
+      }
+    },
+
+    // 提交
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -119,45 +139,49 @@ export default {
             type: "warning",
           }).then(() => {
             if (this.isEdit) {
-              updateBrand(this.$route.query.id, this.brand).then((response) => {
-                this.$refs[formName].resetFields();
-                this.$message({
-                  message: "修改成功",
-                  type: "success",
-                  duration: 1000,
-                });
-                this.$router.back();
+              this.$message({
+                message: "修改成功",
+                type: "success",
               });
+              this.$router.back();
             } else {
-              createBrand(this.brand).then((response) => {
-                this.$refs[formName].resetFields();
-                this.brand = Object.assign({}, defaultBrand);
-                this.$message({
-                  message: "提交成功",
-                  type: "success",
-                  duration: 1000,
-                });
+              this.$message({
+                message: "提交成功",
+                type: "success",
               });
+              this.$router.back();
             }
           });
         } else {
           this.$message({
             message: "验证失败",
             type: "error",
-            duration: 1000,
           });
-          return false;
         }
       });
     },
+
+    // 重置
     resetForm(formName) {
       this.$refs[formName].resetFields();
-      this.brand = Object.assign({}, defaultBrand);
+      this.brand = this.defaultBrand;
     },
   },
 };
 </script>
-<style>
+
+<style lang="less" scoped>
+.product-brand-detail {
+  margin-top: 40px;
+  width: 800px;
+  .form-container {
+    padding: 40px;
+    .btn {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
 </style>
 
 
