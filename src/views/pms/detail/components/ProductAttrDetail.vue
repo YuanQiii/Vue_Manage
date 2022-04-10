@@ -133,7 +133,7 @@ import {
   productSpecificationsApi,
   productParamsApi,
 } from "@/api/product";
-import MultiUpload from "@/components/upload/multiUpload";
+import MultiUpload from "@/components/upload/MultiUpload";
 
 export default {
   name: "ProductAttrDetail",

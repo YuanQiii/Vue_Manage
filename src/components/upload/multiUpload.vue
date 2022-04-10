@@ -25,7 +25,7 @@
 </template>
 <script>
 export default {
-  name: "multiUpload",
+  name: "MultiUpload",
   props: {
     //图片属性数组
     value: Array,
@@ -44,11 +44,11 @@ export default {
   },
   computed: {
     fileList() {
-      let fileList = [];
+      let temp = [];
       this.value.forEach((element) => {
-        fileList.push(element);
+        temp.push(element);
       });
-      return fileList;
+      return temp;
     },
   },
   methods: {

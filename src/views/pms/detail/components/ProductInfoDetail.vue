@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { productFilterCateApi } from "@/api/product";
+import { productFilterCateApi, productChildCateApi } from "@/api/product";
 import { brandListApi } from "@/api/brand";
 
 export default {
@@ -142,13 +142,6 @@ export default {
     },
   },
   watch: {
-    productId(newValue) {
-      if (!this.isEdit) return;
-      if (this.hasEditCreated) return;
-      if (newValue === undefined || newValue == null || newValue === 0) return;
-      this.handleEditCreated();
-    },
-
     // 商品分类选择
     selectProductCateValue(newValue) {
       if (newValue != null && newValue.length === 2) {
@@ -162,28 +155,37 @@ export default {
       }
     },
   },
+
   methods: {
     // 获取商品分类
     getProductCateList() {
       productFilterCateApi().then((response) => {
         let temp = [];
+        let requestList = [];
         response.data.forEach((element) => {
-          let children = [];
-          if (element.children != null && element.children.length > 0) {
-            element.children.forEach((child) => {
-              children.push({
-                label: child.name,
-                value: child.id,
-              });
-            });
-          }
+          requestList.push(productChildCateApi(element.id));
           temp.push({
             label: element.name,
             value: element.id,
-            children: children,
           });
         });
-        this.productCateOptions = temp;
+
+        Promise.all(requestList).then((values) => {
+          values.forEach((element, index) => {
+            let children = [];
+            element.data.forEach((item) => {
+              children.push({
+                label: item.name,
+                value: item.id,
+              });
+            });
+            temp[index].children = children;
+          });
+          this.productCateOptions = temp;
+          if (this.productId != null) {
+            this.handleEditCreated();
+          }
+        });
       });
     },
 
