@@ -44,6 +44,9 @@ const AddProductBrand = () => import("@/views/pms/brand/AddProductBrand.vue");
 const UpdateProductBrand = () =>
   import("@/views/pms/brand/UpdateProductBrand.vue");
 
+const OrderList = () =>
+  import("@/views/oms/list/OrderList.vue");
+
 export const constantRouterMap = [
   {
     path: "/login",
@@ -221,7 +224,7 @@ export const asyncRouterMap = [
       {
         path: "order",
         name: "order",
-        component: Layout,
+        component: OrderList,
         meta: {
           title: "订单列表",
           icon: "product-list",

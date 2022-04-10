@@ -127,27 +127,6 @@
       </div>
     </div>
 
-    <el-dialog
-      title="关闭订单"
-      :visible.sync="closeOrder.dialogVisible"
-      width="30%"
-    >
-      <span style="vertical-align: top">操作备注：</span>
-      <el-input
-        style="width: 80%"
-        type="textarea"
-        :rows="5"
-        placeholder="请输入内容"
-        v-model="closeOrder.content"
-      >
-      </el-input>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="closeOrder.dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleCloseOrderConfirm"
-          >确 定</el-button
-        >
-      </span>
-    </el-dialog>
     <logistics-dialog v-model="logisticsDialogVisible"></logistics-dialog>
   </div>
 </template>
@@ -172,13 +151,6 @@ export default {
       operateType: null,
       multipleSelection: [],
       filterConditions: {},
-
-      // 关闭订单跟踪
-      closeOrder: {
-        dialogVisible: false,
-        content: null,
-        orderIds: [],
-      },
 
       // 订单操作选项
       operateOptions: [
@@ -284,12 +256,6 @@ export default {
       this.$router.push({ path: "/oms/orderDetail", query: { id: row.id } });
     },
 
-    // 关闭订单跟踪
-    handleCloseOrder(index, row) {
-      this.closeOrder.dialogVisible = true;
-      this.closeOrder.orderIds = [row.id];
-    },
-
     // 跳转到订单发货页面
     handleDeliveryOrder(index, row) {
       let listItem = this.covertOrder(row);
@@ -393,30 +359,6 @@ export default {
     handleCurrentChange(val) {
       this.pageConfig.pageNum = val;
       this.getOrderList();
-    },
-
-    handleCloseOrderConfirm() {
-      if (this.closeOrder.content == null || this.closeOrder.content === "") {
-        this.$message({
-          message: "操作备注不能为空",
-          type: "warning",
-          duration: 1000,
-        });
-        return;
-      }
-      let params = new URLSearchParams();
-      params.append("ids", this.closeOrder.orderIds);
-      params.append("note", this.closeOrder.content);
-      closeOrder(params).then((response) => {
-        this.closeOrder.orderIds = [];
-        this.closeOrder.dialogVisible = false;
-        this.getOrderList();
-        this.$message({
-          message: "修改成功",
-          type: "success",
-          duration: 1000,
-        });
-      });
     },
 
     //   获取订单列表
