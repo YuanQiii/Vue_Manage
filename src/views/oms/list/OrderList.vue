@@ -131,10 +131,10 @@
   </div>
 </template>
 <script>
-import { formatDate } from "@/utils/date";
+import {formatDate} from "@/utils/date";
 import LogisticsDialog from "@/views/oms/list/components/LogisticsDialog";
 
-import { orderListApi } from "@/api/order";
+import {orderListApi} from "@/api/order";
 import OrderSearch from "./components/OrderSearch.vue";
 
 export default {
@@ -401,7 +401,7 @@ export default {
         order.receiverCity +
         order.receiverRegion +
         order.receiverDetailAddress;
-      let listItem = {
+      return {
         orderId: order.id,
         orderSn: order.orderSn,
         receiverName: order.receiverName,
@@ -411,14 +411,12 @@ export default {
         deliveryCompany: null,
         deliverySn: null,
       };
-      return listItem;
     },
   },
 };
 </script>
 <style lang="less" scoped>
 .order-orderList {
-  margin-left: 40px;
   margin: 40px;
   .operate-container {
     margin-top: 20px;
