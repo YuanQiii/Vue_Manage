@@ -131,10 +131,10 @@
   </div>
 </template>
 <script>
-import {formatDate} from "@/utils/date";
+import { formatDate } from "@/utils/date";
 import LogisticsDialog from "@/views/oms/list/components/LogisticsDialog";
 
-import {orderListApi} from "@/api/order";
+import { orderListApi } from "@/api/order";
 import OrderSearch from "./components/OrderSearch.vue";
 
 export default {
@@ -260,8 +260,8 @@ export default {
     handleDeliveryOrder(index, row) {
       let listItem = this.covertOrder(row);
       this.$router.push({
-        path: "/oms/deliverOrderList",
-        query: { orderList: [listItem] },
+        name: "deliverOrderList",
+        params: { deliverList: [listItem] },
       });
     },
 
@@ -308,7 +308,7 @@ export default {
         }
       });
 
-      if (selectOrderList.length) {
+      if (!selectOrderList.length) {
         this.$message({
           message: "选中订单中没有可以发货的订单",
           type: "warning",
@@ -317,8 +317,8 @@ export default {
       }
 
       this.$router.push({
-        path: "/oms/deliverOrderList",
-        query: { orderList: orderList },
+        name: "deliverOrderList",
+        params: { deliverList: selectOrderList },
       });
     },
 

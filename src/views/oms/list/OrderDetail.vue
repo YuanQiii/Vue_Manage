@@ -32,11 +32,15 @@
 
     <el-card shadow="never" style="margin-top: 15px">
       <!-- 当前订单状态操作 -->
-      <order-operate />
+      <order-operate :order="order" @updateReceiverInfo="updateReceiverInfo" />
 
       <!-- 基本信息 -->
       <div style="margin-top: 20px">
-        <svg-icon icon-class="marker" style="color: #606266"></svg-icon>
+        <svg-icon
+          class="icon"
+          icon-class="marker"
+          style="color: #606266"
+        ></svg-icon>
         <span class="font-small">基本信息</span>
       </div>
       <div class="table-layout">
@@ -102,7 +106,11 @@
 
       <!-- 收货人信息 -->
       <div style="margin-top: 20px">
-        <svg-icon icon-class="marker" style="color: #606266"></svg-icon>
+        <svg-icon
+          class="icon"
+          icon-class="marker"
+          style="color: #606266"
+        ></svg-icon>
         <span class="font-small">收货人信息</span>
       </div>
       <div class="table-layout">
@@ -128,7 +136,11 @@
 
       <!-- 商品信息 -->
       <div style="margin-top: 20px">
-        <svg-icon icon-class="marker" style="color: #606266"></svg-icon>
+        <svg-icon
+          class="icon"
+          icon-class="marker"
+          style="color: #606266"
+        ></svg-icon>
         <span class="font-small">商品信息</span>
       </div>
       <el-table
@@ -171,12 +183,16 @@
         </el-table-column>
       </el-table>
       <div style="float: right; margin: 20px">
-        合计：<span class="color-danger">￥{{ order.totalAmount }}</span>
+        合计：<span class="color-danger">￥18732</span>
       </div>
 
       <!-- 费用信息 -->
       <div style="margin-top: 60px">
-        <svg-icon icon-class="marker" style="color: #606266"></svg-icon>
+        <svg-icon
+          class="icon"
+          icon-class="marker"
+          style="color: #606266"
+        ></svg-icon>
         <span class="font-small">费用信息</span>
       </div>
       <div class="table-layout">
@@ -187,12 +203,8 @@
           <el-col :span="6" class="table-cell-title">积分抵扣</el-col>
         </el-row>
         <el-row>
-          <el-col :span="6" class="table-cell"
-            >￥{{ order.totalAmount }}</el-col
-          >
-          <el-col :span="6" class="table-cell"
-            >￥{{ order.freightAmount }}</el-col
-          >
+          <el-col :span="6" class="table-cell">￥18732</el-col>
+          <el-col :span="6" class="table-cell">￥20</el-col>
           <el-col :span="6" class="table-cell"
             >-￥{{ order.couponAmount }}</el-col
           >
@@ -211,37 +223,30 @@
             >-￥{{ order.promotionAmount }}</el-col
           >
           <el-col :span="6" class="table-cell"
-            >-￥{{ order.discountAmount }}</el-col
+            >-￥{{ order.couponAmount }}</el-col
           >
           <el-col :span="6" class="table-cell">
-            <span class="color-danger"
-              >￥{{ order.totalAmount + order.freightAmount }}</span
-            >
+            <span class="color-danger">￥18732</span>
           </el-col>
           <el-col :span="6" class="table-cell">
             <span class="color-danger"
-              >￥{{
-                order.payAmount + order.freightAmount - order.discountAmount
-              }}</span
+              >￥{{ 18732 - order.promotionAmount }}</span
             >
           </el-col>
         </el-row>
       </div>
     </el-card>
-
-    <logistics-dialog v-model="logisticsDialogVisible"></logistics-dialog>
   </div>
 </template>
 <script>
-import LogisticsDialog from "@/views/oms/list/components/LogisticsDialog.vue";
 import { formatDate } from "@/utils/date";
-
 import { orderListApi } from "@/api/order";
 
 import OrderOperate from "./components/OrderOperate.vue";
+
 export default {
   name: "OrderDetail",
-  components: { LogisticsDialog, OrderOperate },
+  components: { OrderOperate },
   data() {
     return {
       id: this.$route.query.id,
@@ -345,6 +350,11 @@ export default {
       });
     },
 
+    // 修改收货信息
+    updateReceiverInfo(value) {
+      this.order = Object.assign(this.order, value);
+    },
+
     // 格式化时间
     formatTime(time) {
       if (time == null || time === "") {
@@ -372,23 +382,15 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang='less' scoped>
+.icon {
+  margin-right: 5px;
+}
+
 .detail-container {
   width: 80%;
-  padding: 20px 20px 20px 20px;
+  padding: 20px;
   margin: 20px auto;
-}
-
-.operate-container {
-  background: #f2f6fc;
-  height: 80px;
-  margin: -20px -20px 0;
-  line-height: 80px;
-}
-
-.operate-button-container {
-  float: right;
-  margin-right: 20px;
 }
 
 .table-layout {
@@ -417,6 +419,9 @@ export default {
   text-align: center;
   font-size: 14px;
   color: #303133;
+}
+.color-danger {
+  color: #f56c6c;
 }
 </style>
 

@@ -8,17 +8,15 @@
   <div class="order-operate">
     <!-- 当前订单状态操作 -->
     <div class="operate-container">
-      <i class="el-icon-warning color-danger" style="margin-left: 20px"></i>
+      <i class="el-icon-warning color-danger"></i>
       <span class="color-danger"
         >当前订单状态：{{ order.status | formatStatus }}</span
       >
+
+      <!-- 待付款 -->
       <div class="operate-button-container" v-show="order.status === 0">
         <el-button size="mini" @click="showUpdateReceiverDialog"
           >修改收货人信息</el-button
-        >
-        <el-button size="mini">修改商品信息</el-button>
-        <el-button size="mini" @click="showUpdateMoneyDialog"
-          >修改费用信息</el-button
         >
         <el-button size="mini" @click="showMessageDialog">发送站内信</el-button>
         <el-button size="mini" @click="showCloseOrderDialog"
@@ -26,14 +24,18 @@
         >
         <el-button size="mini" @click="showMarkOrderDialog">备注订单</el-button>
       </div>
+
+      <!-- 待发货 -->
       <div class="operate-button-container" v-show="order.status === 1">
         <el-button size="mini" @click="showUpdateReceiverDialog"
           >修改收货人信息</el-button
         >
         <el-button size="mini" @click="showMessageDialog">发送站内信</el-button>
-        <el-button size="mini">取消订单</el-button>
+        <el-button size="mini" @click="handleCancelOrder">取消订单</el-button>
         <el-button size="mini" @click="showMarkOrderDialog">备注订单</el-button>
       </div>
+
+      <!-- 已发货/已完成 -->
       <div
         class="operate-button-container"
         v-show="order.status === 2 || order.status === 3"
@@ -42,12 +44,15 @@
         <el-button size="mini" @click="showMessageDialog">发送站内信</el-button>
         <el-button size="mini" @click="showMarkOrderDialog">备注订单</el-button>
       </div>
+
+      <!-- 已关闭 -->
       <div class="operate-button-container" v-show="order.status === 4">
         <el-button size="mini" @click="handleDeleteOrder">删除订单</el-button>
         <el-button size="mini" @click="showMarkOrderDialog">备注订单</el-button>
       </div>
     </div>
 
+    <!-- 修改收货人信息 -->
     <el-dialog
       title="修改收货人信息"
       :visible.sync="receiverDialogVisible"
@@ -95,72 +100,8 @@
         >
       </span>
     </el-dialog>
-    <el-dialog
-      title="修改费用信息"
-      :visible.sync="moneyDialogVisible"
-      width="40%"
-    >
-      <div class="table-layout">
-        <el-row>
-          <el-col :span="6" class="table-cell-title">商品合计</el-col>
-          <el-col :span="6" class="table-cell-title">运费</el-col>
-          <el-col :span="6" class="table-cell-title">优惠券</el-col>
-          <el-col :span="6" class="table-cell-title">积分抵扣</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6" class="table-cell"
-            >￥{{ order.totalAmount }}</el-col
-          >
-          <el-col :span="6" class="table-cell">
-            <el-input v-model.number="moneyInfo.freightAmount" size="mini"
-              ><template slot="prepend">￥</template></el-input
-            >
-          </el-col>
-          <el-col :span="6" class="table-cell"
-            >-￥{{ order.couponAmount }}</el-col
-          >
-          <el-col :span="6" class="table-cell"
-            >-￥{{ order.integrationAmount }}</el-col
-          >
-        </el-row>
-        <el-row>
-          <el-col :span="6" class="table-cell-title">活动优惠</el-col>
-          <el-col :span="6" class="table-cell-title">折扣金额</el-col>
-          <el-col :span="6" class="table-cell-title">订单总金额</el-col>
-          <el-col :span="6" class="table-cell-title">应付款金额</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6" class="table-cell"
-            >-￥{{ order.promotionAmount }}</el-col
-          >
-          <el-col :span="6" class="table-cell">
-            <el-input v-model.number="moneyInfo.discountAmount" size="mini"
-              ><template slot="prepend">-￥</template></el-input
-            >
-          </el-col>
-          <el-col :span="6" class="table-cell">
-            <span class="color-danger"
-              >￥{{ order.totalAmount + moneyInfo.freightAmount }}</span
-            >
-          </el-col>
-          <el-col :span="6" class="table-cell">
-            <span class="color-danger"
-              >￥{{
-                order.payAmount +
-                moneyInfo.freightAmount -
-                moneyInfo.discountAmount
-              }}</span
-            >
-          </el-col>
-        </el-row>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="moneyDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleUpdateMoneyInfo"
-          >确 定</el-button
-        >
-      </span>
-    </el-dialog>
+
+    <!-- 发送站内信 -->
     <el-dialog
       title="发送站内信"
       :visible.sync="messageDialogVisible"
@@ -180,6 +121,8 @@
         <el-button type="primary" @click="handleSendMessage">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 关闭订单 -->
     <el-dialog title="关闭订单" :visible.sync="closeDialogVisible" width="40%">
       <el-form :model="closeInfo" label-width="150px">
         <el-form-item label="操作备注：">
@@ -192,6 +135,8 @@
         <el-button type="primary" @click="handleCloseOrder">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 备注订单 -->
     <el-dialog
       title="备注订单"
       :visible.sync="markOrderDialogVisible"
@@ -208,48 +153,30 @@
         <el-button type="primary" @click="handleMarkOrder">确 定</el-button>
       </span>
     </el-dialog>
+
+    <logistics-dialog v-model="logisticsDialogVisible"></logistics-dialog>
   </div>
 </template>
 
 <script>
+import LogisticsDialog from "@/views/oms/list/components/LogisticsDialog.vue";
 import VDistpicker from "v-distpicker";
 export default {
   name: "OrderOperate",
   components: {
     VDistpicker,
+    LogisticsDialog,
   },
   props: {
     order: {
       type: Object,
       default: {},
     },
-    receiverInfo: {
-      type: Object,
-      default: {},
-    },
   },
   data() {
     return {
-      defaultReceiverInfo: {
-        orderId: null,
-        receiverName: null,
-        receiverPhone: null,
-        receiverPostCode: null,
-        receiverDetailAddress: null,
-        receiverProvince: null,
-        receiverCity: null,
-        receiverRegion: null,
-        status: null,
-      },
-      receiverInfo: Object.assign({}, this.defaultReceiverInfo),
+      receiverInfo: {},
       receiverDialogVisible: false,
-      moneyDialogVisible: false,
-      moneyInfo: {
-        orderId: null,
-        freightAmount: 0,
-        discountAmount: 0,
-        status: null,
-      },
       messageDialogVisible: false,
       message: { title: null, content: null },
       closeDialogVisible: false,
@@ -277,6 +204,7 @@ export default {
     },
   },
   methods: {
+    // 修改收货人信息
     showUpdateReceiverDialog() {
       this.receiverDialogVisible = true;
       this.receiverInfo = {
@@ -291,51 +219,40 @@ export default {
         status: this.order.status,
       };
     },
-    showUpdateMoneyDialog() {
-      this.moneyDialogVisible = true;
-      this.moneyInfo.orderId = this.order.id;
-      this.moneyInfo.freightAmount = this.order.freightAmount;
-      this.moneyInfo.discountAmount = this.order.discountAmount;
-      this.moneyInfo.status = this.order.status;
-    },
+
+    // 发送站内信
     showMessageDialog() {
       this.messageDialogVisible = true;
       this.message.title = null;
       this.message.content = null;
     },
+
+    // 关闭订单
     showCloseOrderDialog() {
       this.closeDialogVisible = true;
       this.closeInfo.note = null;
       this.closeInfo.id = this.id;
     },
+
+    // 备注订单
     showMarkOrderDialog() {
       this.markOrderDialogVisible = true;
       this.markInfo.id = this.id;
-      this.closeOrder.note = null;
     },
+
+    // 订单跟踪
     showLogisticsDialog() {
       this.logisticsDialogVisible = true;
     },
+
+    // 区域选择
     onSelectRegion(data) {
       this.receiverInfo.receiverProvince = data.province.value;
       this.receiverInfo.receiverCity = data.city.value;
       this.receiverInfo.receiverRegion = data.area.value;
     },
-    handleUpdateMoneyInfo() {
-      this.$confirm("是否要修改费用信息?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      }).then(() => {
-        updateMoneyInfo(this.moneyInfo).then((response) => {
-          this.moneyDialogVisible = false;
-          this.$message({
-            type: "success",
-            message: "修改成功!",
-          });
-        });
-      });
-    },
+
+    // 发送站内信
     handleSendMessage() {
       this.$confirm("是否要发送站内信?", "提示", {
         confirmButtonText: "确定",
@@ -349,6 +266,8 @@ export default {
         });
       });
     },
+
+    // 关闭订单
     handleCloseOrder() {
       this.$confirm("是否要关闭?", "提示", {
         confirmButtonText: "确定",
@@ -360,8 +279,27 @@ export default {
           type: "success",
           message: "订单关闭成功!",
         });
+        this.$router.back();
       });
     },
+
+    // 取消订单
+    handleCancelOrder() {
+      this.$confirm("是否要取消?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        this.closeDialogVisible = false;
+        this.$message({
+          type: "success",
+          message: "订单关取消成功!",
+        });
+        this.$router.back();
+      });
+    },
+
+    // 删除订单
     handleDeleteOrder() {
       this.$confirm("是否要进行该删除操作?", "提示", {
         confirmButtonText: "确定",
@@ -376,6 +314,8 @@ export default {
         this.$router.back();
       });
     },
+
+    // 备注订单
     handleMarkOrder() {
       this.$confirm("是否要备注订单?", "提示", {
         confirmButtonText: "确定",
@@ -389,9 +329,42 @@ export default {
         });
       });
     },
+
+    // 修改收货信息
+    handleUpdateReceiverInfo() {
+      this.$confirm("是否要修改收货信息?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        this.receiverDialogVisible = false;
+        this.$message({
+          type: "success",
+          message: "修改成功!",
+        });
+        this.$emit("updateReceiverInfo", this.receiverInfo);
+      });
+    },
   },
 };
 </script>
 
-<style>
+<style lang="less" scoped>
+.operate-container {
+  background: #f2f6fc;
+  height: 80px;
+  margin: -20px -20px 0;
+  line-height: 80px;
+}
+.operate-button-container {
+  float: right;
+  margin-right: 20px;
+}
+.el-icon-warning {
+  margin-left: 20px;
+  margin-right: 5px;
+}
+.color-danger {
+  color: #f56c6c;
+}
 </style>
