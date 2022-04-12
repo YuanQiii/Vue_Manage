@@ -6,7 +6,7 @@
 -->
 <template>
   <div class="order-return-apply-list">
-    <apply-filter />
+    <apply-filter @searchResult="searchResult" />
 
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
@@ -16,7 +16,7 @@
     <div class="table-container">
       <el-table
         ref="returnApplyTable"
-        :data="returnApplyList"
+        :data="currentList"
         style="width: 100%"
         @selection-change="handleSelectionChange"
         v-loading="listLoading"
@@ -45,7 +45,7 @@
         </el-table-column>
         <el-table-column label="申请状态" width="180" align="center">
           <template slot-scope="scope">{{
-            scope.row.status | formatStatus
+            scope.row.status | formatStatus(statusOptions)
           }}</template>
         </el-table-column>
         <el-table-column label="处理时间" width="180" align="center">
@@ -129,13 +129,14 @@ export default {
           value: 3,
         },
       ],
-      returnApplyList: null,
+      returnApplyList: [],
       listLoading: false,
       multipleSelection: [],
       pageConfig: {
         pageNum: 1,
         pageSize: 10,
       },
+      filterConditions: {},
       operateType: 1,
       operateOptions: [
         {
@@ -157,25 +158,70 @@ export default {
       return formatDate(date, "yyyy-MM-dd hh:mm:ss");
     },
 
-    formatStatus(status) {
-      for (let i = 0; i < this.statusOptions.length; i++) {
-        if (status === this.statusOptions[i].value) {
-          return this.statusOptions[i].label;
+    formatStatus(status, statusOptions) {
+      let temp = "";
+      statusOptions.forEach((element) => {
+        if (status == element.value) {
+          temp = element.label;
         }
-      }
+      });
+      return temp;
     },
 
     formatReturnAmount(row) {
       return row.productRealPrice * row.productCount;
     },
   },
+  computed: {
+    // 当前展示数据列表
+    currentList() {
+      let temp = [];
+      let start = (this.pageConfig.pageNum - 1) * this.pageConfig.pageSize;
+      let end = this.pageConfig.pageNum * this.pageConfig.pageSize;
+      let max = this.returnApplyList.length;
+      end = end > max ? max : end;
+
+      this.returnApplyList.slice(start, end).forEach((element) => {
+        let flags = [];
+        Object.keys(this.filterConditions).forEach((key) => {
+          let value = this.filterConditions[key];
+
+          if (value != null && (value === 0 || value != "")) {
+            if (value == 0) {
+              if (element[key] == value) {
+                flags.push(true);
+              } else {
+                flags.push(false);
+              }
+            } else {
+              if (element[key] != null && element[key].includes(value)) {
+                flags.push(true);
+              } else {
+                flags.push(false);
+              }
+            }
+          } else {
+            flags.push(true);
+          }
+        });
+        if (flags.every((value) => value)) {
+          temp.push(element);
+        }
+      });
+      return temp;
+    },
+  },
   methods: {
+    searchResult(value) {
+      this.filterConditions = value;
+      console.log(value);
+    },
+
     // 获取退货申请列表
     getOrderReturnApplyList() {
       this.listLoading = true;
       orderRetuenApplyListApi().then((response) => {
         this.listLoading = false;
-        console.log(response.data);
         this.returnApplyList = response.data.list;
       });
     },
@@ -199,7 +245,6 @@ export default {
         this.$message({
           message: "请选择要操作的申请",
           type: "warning",
-          duration: 1000,
         });
         return;
       }
@@ -210,10 +255,16 @@ export default {
           cancelButtonText: "取消",
           type: "warning",
         }).then(() => {
-          let ids = [];
-          for (let i = 0; i < this.multipleSelection.length; i++) {
-            ids.push(this.multipleSelection[i].id);
-          }
+          let temp = [];
+          this.returnApplyList.forEach((element) => {
+            temp.push(element);
+            this.multipleSelection.forEach((item) => {
+              if (item.id == element.id) {
+                temp.pop();
+              }
+            });
+          });
+          this.returnApplyList = temp;
           this.$message({
             type: "success",
             message: "删除成功!",
@@ -224,13 +275,13 @@ export default {
 
     // 列表展示数量
     handleSizeChange(val) {
-      this.filterConditions.pageNum = 1;
-      this.filterConditions.pageSize = val;
+      this.pageConfig.pageNum = 1;
+      this.pageConfig.pageSize = val;
     },
 
     // 改变页码
     handleCurrentChange(val) {
-      this.filterConditions.pageNum = val;
+      this.pageConfig.pageNum = val;
     },
   },
 };
