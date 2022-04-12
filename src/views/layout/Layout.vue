@@ -1,3 +1,9 @@
+<!--
+ * @Autor: YuanQiii
+ * @GitHub: https://github.com/YuanQiii
+ * @Date: 2022-04-06 13:41:24
+ * @FilePath: \vue_manage\src\views\layout\Layout.vue
+-->
 <template>
   <div class="layout">
     <sidebar class="sidebar" />
@@ -39,6 +45,7 @@ export default {
   .container {
     width: 85%;
     padding-top: 20px;
+    margin: 0 auto;
   }
 }
 .fade-enter-active,

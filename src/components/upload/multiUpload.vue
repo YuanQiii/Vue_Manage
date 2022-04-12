@@ -25,7 +25,7 @@
 </template>
 <script>
 export default {
-  name: "multiUpload",
+  name: "MultiUpload",
   props: {
     //图片属性数组
     value: Array,

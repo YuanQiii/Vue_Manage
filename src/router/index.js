@@ -44,14 +44,17 @@ const AddProductBrand = () => import("@/views/pms/brand/AddProductBrand.vue");
 const UpdateProductBrand = () =>
   import("@/views/pms/brand/UpdateProductBrand.vue");
 
-const OrderList = () =>
-  import("@/views/oms/list/OrderList.vue");
-const OrderDetail = () =>
-  import("@/views/oms/list/OrderDetail.vue");
-const DeliverOrderList = () =>
-  import("@/views/oms/list/DeliverOrderList.vue");
+const OrderList = () => import("@/views/oms/list/OrderList.vue");
+const OrderDetail = () => import("@/views/oms/list/OrderDetail.vue");
+const DeliverOrderList = () => import("@/views/oms/list/DeliverOrderList.vue");
 
-export const constantRouterMap = [{
+const OrderSetting = () => import("@/views/oms/setting/OrderSetting.vue");
+
+const OrderReturnApplyList = () =>
+  import("@/views/oms/apply/OrderReturnApplyList.vue");
+
+export const constantRouterMap = [
+  {
     path: "/login",
     name: "login",
     component: Login,
@@ -70,19 +73,22 @@ export const constantRouterMap = [{
   {
     path: "/home",
     component: Layout,
-    children: [{
-      path: "",
-      name: "home",
-      component: Home,
-      meta: {
-        title: "首页",
-        icon: "home",
+    children: [
+      {
+        path: "",
+        name: "home",
+        component: Home,
+        meta: {
+          title: "首页",
+          icon: "home",
+        },
       },
-    }, ],
+    ],
   },
 ];
 
-export const asyncRouterMap = [{
+export const asyncRouterMap = [
+  {
     path: "/pms",
     component: Layout,
     redirect: "/pms/product",
@@ -91,7 +97,8 @@ export const asyncRouterMap = [{
       title: "商品",
       icon: "product",
     },
-    children: [{
+    children: [
+      {
         path: "product",
         name: "product",
         component: ProductList,
@@ -219,7 +226,8 @@ export const asyncRouterMap = [{
       title: "订单",
       icon: "order",
     },
-    children: [{
+    children: [
+      {
         path: "order",
         name: "order",
         component: OrderList,
@@ -249,7 +257,7 @@ export const asyncRouterMap = [{
       {
         path: "orderSetting",
         name: "orderSetting",
-        component: Layout,
+        component: OrderSetting,
         meta: {
           title: "订单设置",
           icon: "order-setting",
@@ -258,7 +266,7 @@ export const asyncRouterMap = [{
       {
         path: "returnApply",
         name: "returnApply",
-        component: Layout,
+        component: OrderReturnApplyList,
         meta: {
           title: "退货申请处理",
           icon: "order-return",
@@ -293,7 +301,8 @@ export const asyncRouterMap = [{
       title: "营销",
       icon: "sms",
     },
-    children: [{
+    children: [
+      {
         path: "flash",
         name: "flash",
         component: Layout,
@@ -439,7 +448,8 @@ export const asyncRouterMap = [{
       title: "权限",
       icon: "ums",
     },
-    children: [{
+    children: [
+      {
         path: "admin",
         name: "admin",
         component: Layout,
