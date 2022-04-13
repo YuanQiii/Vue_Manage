@@ -52,9 +52,10 @@ const OrderSetting = () => import("@/views/oms/setting/OrderSetting.vue");
 
 const OrderReturnApplyList = () =>
   import("@/views/oms/apply/OrderReturnApplyList.vue");
+const OrderReturnApplyDetail = () =>
+  import("@/views/oms/apply/OrderReturnApplyDetail.vue");
 
-export const constantRouterMap = [
-  {
+export const constantRouterMap = [{
     path: "/login",
     name: "login",
     component: Login,
@@ -73,22 +74,19 @@ export const constantRouterMap = [
   {
     path: "/home",
     component: Layout,
-    children: [
-      {
-        path: "",
-        name: "home",
-        component: Home,
-        meta: {
-          title: "首页",
-          icon: "home",
-        },
+    children: [{
+      path: "",
+      name: "home",
+      component: Home,
+      meta: {
+        title: "首页",
+        icon: "home",
       },
-    ],
+    }, ],
   },
 ];
 
-export const asyncRouterMap = [
-  {
+export const asyncRouterMap = [{
     path: "/pms",
     component: Layout,
     redirect: "/pms/product",
@@ -97,8 +95,7 @@ export const asyncRouterMap = [
       title: "商品",
       icon: "product",
     },
-    children: [
-      {
+    children: [{
         path: "product",
         name: "product",
         component: ProductList,
@@ -226,8 +223,7 @@ export const asyncRouterMap = [
       title: "订单",
       icon: "order",
     },
-    children: [
-      {
+    children: [{
         path: "order",
         name: "order",
         component: OrderList,
@@ -284,7 +280,7 @@ export const asyncRouterMap = [
       {
         path: "returnApplyDetail",
         name: "returnApplyDetail",
-        component: Layout,
+        component: OrderReturnApplyDetail,
         meta: {
           title: "退货原因详情",
         },
@@ -301,8 +297,7 @@ export const asyncRouterMap = [
       title: "营销",
       icon: "sms",
     },
-    children: [
-      {
+    children: [{
         path: "flash",
         name: "flash",
         component: Layout,
@@ -448,8 +443,7 @@ export const asyncRouterMap = [
       title: "权限",
       icon: "ums",
     },
-    children: [
-      {
+    children: [{
         path: "admin",
         name: "admin",
         component: Layout,

@@ -14,19 +14,9 @@
     </el-card>
 
     <div class="table-container">
-      <el-table
-        ref="returnApplyTable"
-        :data="currentList"
-        style="width: 100%"
-        @selection-change="handleSelectionChange"
-        v-loading="listLoading"
-        border
-      >
-        <el-table-column
-          type="selection"
-          width="60"
-          align="center"
-        ></el-table-column>
+      <el-table ref="returnApplyTable" :data="currentList" style="width: 100%" @selection-change="handleSelectionChange"
+        v-loading="listLoading" border>
+        <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column label="服务单号" width="180" align="center">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
@@ -39,9 +29,7 @@
           <template slot-scope="scope">{{ scope.row.memberUsername }}</template>
         </el-table-column>
         <el-table-column label="退款金额" width="180" align="center">
-          <template slot-scope="scope"
-            >￥{{ scope.row | formatReturnAmount }}</template
-          >
+          <template slot-scope="scope">￥{{ scope.row | formatReturnAmount }}</template>
         </el-table-column>
         <el-table-column label="申请状态" width="180" align="center">
           <template slot-scope="scope">{{
@@ -55,50 +43,33 @@
         </el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="handleViewDetail(scope.$index, scope.row)"
-              >查看详情</el-button
-            >
+            <el-button size="mini" @click="handleViewDetail(scope.$index, scope.row)">查看详情</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
 
-    <div class="batch-operate-container">
-      <el-select size="small" v-model="operateType" placeholder="批量操作">
-        <el-option
-          v-for="item in operateOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
-      </el-select>
-      <el-button
-        style="margin-left: 20px"
-        class="search-button"
-        @click="handleBatchOperate()"
-        type="primary"
-        size="small"
-      >
-        确定
-      </el-button>
+    <div class="bottom">
+      <div class="batch-operate-container">
+        <el-select size="small" v-model="operateType" placeholder="批量操作">
+          <el-option v-for="item in operateOptions" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+        <el-button style="margin-left: 20px" class="search-button" @click="handleBatchOperate()" type="primary"
+          size="small">
+          确定
+        </el-button>
+      </div>
+
+      <div class="pagination-container">
+        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+          layout="total, sizes,prev, pager, next,jumper" :current-page.sync="pageConfig.pageNum"
+          :page-size="pageConfig.pageSize" :page-sizes="[5, 10, 15]" :total="returnApplyList.length">
+        </el-pagination>
+      </div>
     </div>
 
-    <div class="pagination-container">
-      <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        layout="total, sizes,prev, pager, next,jumper"
-        :current-page.sync="pageConfig.pageNum"
-        :page-size="pageConfig.pageSize"
-        :page-sizes="[5, 10, 15]"
-        :total="returnApplyList.length"
-      >
-      </el-pagination>
-    </div>
+
   </div>
 </template>
 <script>
@@ -187,7 +158,7 @@ export default {
           let value = this.filterConditions[key];
 
           if (value != null && (value === 0 || value != "")) {
-            if (value == 0) {
+            if (typeof value == 'number') {
               if (element[key] == value) {
                 flags.push(true);
               } else {
@@ -286,7 +257,26 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="less" scoped>
+.order-return-apply-list {
+  margin-top: 40px;
+
+  .el-icon-tickets {
+    margin-right: 5px;
+  }
+
+  .operate-container {
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+
+  .bottom {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 40px;
+  }
+}
 </style>
 
 

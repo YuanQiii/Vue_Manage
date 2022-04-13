@@ -30,6 +30,7 @@ export default {
 .layout {
   position: relative;
   display: flex;
+
   .sidebar {
     display: block;
     position: sticky;
@@ -38,21 +39,29 @@ export default {
     width: 180px;
     height: 100vh;
     overflow: scroll;
+
     &::-webkit-scrollbar {
       display: none;
     }
   }
+
   .container {
     width: 85%;
     padding-top: 20px;
     margin: 0 auto;
   }
 }
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+
+.fade-enter,
+.fade-leave-to
+
+/* .fade-leave-active below version 2.1.8 */
+  {
   opacity: 0;
 }
 </style>

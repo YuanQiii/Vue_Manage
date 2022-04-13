@@ -29,3 +29,23 @@ export function orderRetuenApplyListApi() {
     method: "get",
   });
 }
+
+
+// 订单发货地址列表
+export function orderRetuenApplyDetailApi(id) {
+  return request({
+    url: "/orderRetuenApplyDetail",
+    method: "get",
+    params: {
+      id
+    }
+  });
+}
+
+// 订单发货地址列表
+export function companyAddressListApi() {
+  return request({
+    url: "/companyAddressList",
+    method: "get",
+  });
+}
