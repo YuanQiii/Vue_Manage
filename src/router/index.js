@@ -57,8 +57,10 @@ const OrderReturnApplyDetail = () =>
 const OrderReturnApplyReason = () =>
   import("@/views/oms/apply/OrderReturnApplyReason.vue");
 
-export const constantRouterMap = [
-  {
+const CouponList = () =>
+  import("@/views/sms/coupon/CouponList.vue");
+
+export const constantRouterMap = [{
     path: "/login",
     name: "login",
     component: Login,
@@ -77,22 +79,19 @@ export const constantRouterMap = [
   {
     path: "/home",
     component: Layout,
-    children: [
-      {
-        path: "",
-        name: "home",
-        component: Home,
-        meta: {
-          title: "首页",
-          icon: "home",
-        },
+    children: [{
+      path: "",
+      name: "home",
+      component: Home,
+      meta: {
+        title: "首页",
+        icon: "home",
       },
-    ],
+    }, ],
   },
 ];
 
-export const asyncRouterMap = [
-  {
+export const asyncRouterMap = [{
     path: "/pms",
     component: Layout,
     redirect: "/pms/product",
@@ -101,8 +100,7 @@ export const asyncRouterMap = [
       title: "商品",
       icon: "product",
     },
-    children: [
-      {
+    children: [{
         path: "product",
         name: "product",
         component: ProductList,
@@ -230,8 +228,7 @@ export const asyncRouterMap = [
       title: "订单",
       icon: "order",
     },
-    children: [
-      {
+    children: [{
         path: "order",
         name: "order",
         component: OrderList,
@@ -305,8 +302,7 @@ export const asyncRouterMap = [
       title: "营销",
       icon: "sms",
     },
-    children: [
-      {
+    children: [{
         path: "flash",
         name: "flash",
         component: Layout,
@@ -345,7 +341,7 @@ export const asyncRouterMap = [
       {
         path: "coupon",
         name: "coupon",
-        component: Layout,
+        component: CouponList,
         meta: {
           title: "优惠券列表",
           icon: "sms-coupon",
@@ -452,8 +448,7 @@ export const asyncRouterMap = [
       title: "权限",
       icon: "ums",
     },
-    children: [
-      {
+    children: [{
         path: "admin",
         name: "admin",
         component: Layout,
