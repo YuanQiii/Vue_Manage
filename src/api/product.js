@@ -25,6 +25,14 @@ export function productChildCateApi(id) {
   });
 }
 
+// 商品分类
+export function productCategoryApi() {
+  return request({
+    url: "/productCategory",
+    method: "get",
+  });
+}
+
 // 商品列表获取
 export function productListApi() {
   return request({

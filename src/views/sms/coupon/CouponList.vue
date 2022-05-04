@@ -7,7 +7,38 @@
 <template>
    
   <div class="coupon-couponList">
-    <coupon-search @searchResult="searchResult" />
+    <filter-search @handleSearch="handleSearch" @handleReset="handleReset">
+      <el-form
+        :inline="true"
+        :model="filterConditions"
+        size="small"
+        label-width="140px"
+      >
+        <el-form-item label="优惠券名称：">
+          <el-input
+            v-model="filterConditions.name"
+            class="input-width"
+            placeholder="优惠券名称"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="优惠券类型：">
+          <el-select
+            v-model="filterConditions.type"
+            placeholder="全部"
+            clearable
+            class="input-width"
+          >
+            <el-option
+              v-for="item in typeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </filter-search>
 
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
@@ -114,15 +145,16 @@
 import { couponListApi } from "@/api/marketing";
 import { formatDate } from "@/utils/date";
 import { dataTableList } from "@/utils/logic";
-import CouponSearch from "./components/CouponSearch.vue";
+import FilterSearch from "@/components/filterSearch/FilterSearch.vue";
 
 export default {
-  components: { CouponSearch },
+  components: { FilterSearch },
   name: "CouponList",
   data() {
     return {
       filterConditions: {},
       couponList: [],
+      dataTableList: [],
       listLoading: false,
       multipleSelection: [],
       pageConfig: {
@@ -198,15 +230,6 @@ export default {
       }
     },
   },
-  computed: {
-    dataTableList() {
-      return dataTableList(
-        this.couponList,
-        this.pageConfig,
-        this.filterConditions
-      );
-    },
-  },
   methods: {
     //  获取优惠券数据
     getCouponList() {
@@ -214,13 +237,23 @@ export default {
       couponListApi().then((response) => {
         this.listLoading = false;
         this.couponList = response.data.list;
+        this.dataTableList = this.couponList;
       });
     },
 
-    // 搜索
-    searchResult(value) {
-      this.filterConditions = value;
+    // 查询搜索
+    handleSearch() {
+      this.dataTableList = dataTableList(
+        this.couponList,
+        this.pageConfig,
+        this.filterConditions
+      );
       this.pageConfig.pageNum = 1;
+    },
+
+    // 重置
+    handleReset() {
+      this.filterConditions = {};
     },
 
     // 多选
@@ -266,11 +299,17 @@ export default {
         let temp = [];
         this.couponList.forEach((element) => {
           temp.push(element);
+          console.log(element.id);
           if (element.id == row.id) {
             temp.pop();
           }
         });
         this.couponList = temp;
+        this.dataTableList = dataTableList(
+          this.couponList,
+          this.pageConfig,
+          this.filterConditions
+        );
 
         this.$message({
           type: "success",
@@ -289,6 +328,9 @@ export default {
   .operate-container {
     margin-top: 20px;
     margin-bottom: 20px;
+    .el-icon-tickets {
+      margin-right: 5px;
+    }
     .btn-add {
       float: right;
       margin-top: -5px;

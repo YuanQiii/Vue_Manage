@@ -12,3 +12,23 @@ export function couponListApi() {
         method: "get",
     });
 }
+
+export function couponDetailApi(id) {
+    return request({
+        url: "/couponDetail",
+        method: "get",
+        params: {
+            id
+        }
+    });
+}
+
+export function couponHistoryApi(id) {
+    return request({
+        url: "/couponHistory",
+        method: "get",
+        params: {
+            id
+        }
+    });
+}

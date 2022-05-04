@@ -59,39 +59,50 @@ const OrderReturnApplyReason = () =>
 
 const CouponList = () =>
   import("@/views/sms/coupon/CouponList.vue");
+const AddCoupon = () =>
+  import("@/views/sms/coupon/AddCoupon.vue");
+const UpdateCoupon = () =>
+  import("@/views/sms/coupon/UpdateCoupon.vue");
+const CouponHistory = () =>
+  import("@/views/sms/coupon/CouponHistory.vue");
+const BrandRecommed = () =>
+  import("@/views/sms/brand/BrandRecommend.vue");
+const HotRecommend = () =>
+  import("@/views/sms/hot/HotRecommend.vue");
 
 export const constantRouterMap = [{
-    path: "/login",
-    name: "login",
-    component: Login,
-    hidden: true,
-  },
-  {
-    path: "/404",
-    name: "404",
-    component: wrongPage,
-    hidden: true,
-  },
-  {
+  path: "/login",
+  name: "login",
+  component: Login,
+  hidden: true,
+},
+{
+  path: "/404",
+  name: "404",
+  component: wrongPage,
+  hidden: true,
+},
+{
+  path: "",
+  redirect: "/home",
+},
+{
+  path: "/home",
+  component: Layout,
+  children: [{
     path: "",
-    redirect: "/home",
-  },
-  {
-    path: "/home",
-    component: Layout,
-    children: [{
-      path: "",
-      name: "home",
-      component: Home,
-      meta: {
-        title: "首页",
-        icon: "home",
-      },
-    }, ],
-  },
+    name: "home",
+    component: Home,
+    meta: {
+      title: "首页",
+      icon: "home",
+    },
+  },],
+},
 ];
 
-export const asyncRouterMap = [{
+export const asyncRouterMap = [
+  {
     path: "/pms",
     component: Layout,
     redirect: "/pms/product",
@@ -101,122 +112,122 @@ export const asyncRouterMap = [{
       icon: "product",
     },
     children: [{
-        path: "product",
-        name: "product",
-        component: ProductList,
-        meta: {
-          title: "商品列表",
-          icon: "product-list",
-        },
+      path: "product",
+      name: "product",
+      component: ProductList,
+      meta: {
+        title: "商品列表",
+        icon: "product-list",
       },
-      {
-        path: "addProduct",
-        name: "addProduct",
-        component: AddProduct,
-        meta: {
-          title: "添加商品",
-          icon: "product-add",
-        },
+    },
+    {
+      path: "addProduct",
+      name: "addProduct",
+      component: AddProduct,
+      meta: {
+        title: "添加商品",
+        icon: "product-add",
       },
-      {
-        path: "updateProduct",
-        name: "updateProduct",
-        component: UpdateProduct,
-        meta: {
-          title: "修改商品",
-        },
-        hidden: true,
+    },
+    {
+      path: "updateProduct",
+      name: "updateProduct",
+      component: UpdateProduct,
+      meta: {
+        title: "修改商品",
       },
-      {
-        path: "productCate",
-        name: "productCate",
-        component: ProductCateList,
-        meta: {
-          title: "商品分类",
-          icon: "product-cate",
-        },
+      hidden: true,
+    },
+    {
+      path: "productCate",
+      name: "productCate",
+      component: ProductCateList,
+      meta: {
+        title: "商品分类",
+        icon: "product-cate",
       },
-      {
-        path: "addProductCate",
-        name: "addProductCate",
-        component: AddProductCate,
-        meta: {
-          title: "添加商品分类",
-        },
-        hidden: true,
+    },
+    {
+      path: "addProductCate",
+      name: "addProductCate",
+      component: AddProductCate,
+      meta: {
+        title: "添加商品分类",
       },
-      {
-        path: "updateProductCate",
-        name: "updateProductCate",
-        component: UpdateProductCate,
-        meta: {
-          title: "修改商品分类",
-        },
-        hidden: true,
+      hidden: true,
+    },
+    {
+      path: "updateProductCate",
+      name: "updateProductCate",
+      component: UpdateProductCate,
+      meta: {
+        title: "修改商品分类",
       },
-      {
-        path: "productAttr",
-        name: "productAttr",
-        component: Layout,
-        meta: {
-          title: "商品类型",
-          icon: "product-attr",
-        },
+      hidden: true,
+    },
+    {
+      path: "productAttr",
+      name: "productAttr",
+      component: Layout,
+      meta: {
+        title: "商品类型",
+        icon: "product-attr",
       },
-      {
-        path: "productAttrList",
-        name: "productAttrList",
-        component: Layout,
-        meta: {
-          title: "商品属性列表",
-        },
-        hidden: true,
+    },
+    {
+      path: "productAttrList",
+      name: "productAttrList",
+      component: Layout,
+      meta: {
+        title: "商品属性列表",
       },
-      {
-        path: "addProductAttr",
-        name: "addProductAttr",
-        component: Layout,
-        meta: {
-          title: "添加商品属性",
-        },
-        hidden: true,
+      hidden: true,
+    },
+    {
+      path: "addProductAttr",
+      name: "addProductAttr",
+      component: Layout,
+      meta: {
+        title: "添加商品属性",
       },
-      {
-        path: "updateProductAttr",
-        name: "updateProductAttr",
-        component: Layout,
-        meta: {
-          title: "修改商品属性",
-        },
-        hidden: true,
+      hidden: true,
+    },
+    {
+      path: "updateProductAttr",
+      name: "updateProductAttr",
+      component: Layout,
+      meta: {
+        title: "修改商品属性",
       },
-      {
-        path: "brand",
-        name: "brand",
-        component: ProductBrandList,
-        meta: {
-          title: "品牌管理",
-          icon: "product-brand",
-        },
+      hidden: true,
+    },
+    {
+      path: "brand",
+      name: "brand",
+      component: ProductBrandList,
+      meta: {
+        title: "品牌管理",
+        icon: "product-brand",
       },
-      {
-        path: "addBrand",
-        name: "addBrand",
-        component: AddProductBrand,
-        meta: {
-          title: "添加品牌",
-        },
-        hidden: true,
+    },
+    {
+      path: "addBrand",
+      name: "addBrand",
+      component: AddProductBrand,
+      meta: {
+        title: "添加品牌",
       },
-      {
-        path: "updateBrand",
-        name: "updateBrand",
-        component: UpdateProductBrand,
-        meta: {
-          title: "编辑品牌",
-        },
-        hidden: true,
+      hidden: true,
+    },
+    {
+      path: "updateBrand",
+      name: "updateBrand",
+      component: UpdateProductBrand,
+      meta: {
+        title: "编辑品牌",
       },
+      hidden: true,
+    },
     ],
   },
   {
@@ -229,68 +240,68 @@ export const asyncRouterMap = [{
       icon: "order",
     },
     children: [{
-        path: "order",
-        name: "order",
-        component: OrderList,
-        meta: {
-          title: "订单列表",
-          icon: "product-list",
-        },
+      path: "order",
+      name: "order",
+      component: OrderList,
+      meta: {
+        title: "订单列表",
+        icon: "product-list",
       },
-      {
-        path: "orderDetail",
-        name: "orderDetail",
-        component: OrderDetail,
-        meta: {
-          title: "订单详情",
-        },
-        hidden: true,
+    },
+    {
+      path: "orderDetail",
+      name: "orderDetail",
+      component: OrderDetail,
+      meta: {
+        title: "订单详情",
       },
-      {
-        path: "deliverOrderList",
-        name: "deliverOrderList",
-        component: DeliverOrderList,
-        meta: {
-          title: "发货列表",
-        },
-        hidden: true,
+      hidden: true,
+    },
+    {
+      path: "deliverOrderList",
+      name: "deliverOrderList",
+      component: DeliverOrderList,
+      meta: {
+        title: "发货列表",
       },
-      {
-        path: "orderSetting",
-        name: "orderSetting",
-        component: OrderSetting,
-        meta: {
-          title: "订单设置",
-          icon: "order-setting",
-        },
+      hidden: true,
+    },
+    {
+      path: "orderSetting",
+      name: "orderSetting",
+      component: OrderSetting,
+      meta: {
+        title: "订单设置",
+        icon: "order-setting",
       },
-      {
-        path: "returnApply",
-        name: "returnApply",
-        component: OrderReturnApplyList,
-        meta: {
-          title: "退货申请处理",
-          icon: "order-return",
-        },
+    },
+    {
+      path: "returnApply",
+      name: "returnApply",
+      component: OrderReturnApplyList,
+      meta: {
+        title: "退货申请处理",
+        icon: "order-return",
       },
-      {
-        path: "returnReason",
-        name: "returnReason",
-        component: OrderReturnApplyReason,
-        meta: {
-          title: "退货原因设置",
-          icon: "order-return-reason",
-        },
+    },
+    {
+      path: "returnReason",
+      name: "returnReason",
+      component: OrderReturnApplyReason,
+      meta: {
+        title: "退货原因设置",
+        icon: "order-return-reason",
       },
-      {
-        path: "returnApplyDetail",
-        name: "returnApplyDetail",
-        component: OrderReturnApplyDetail,
-        meta: {
-          title: "退货原因详情",
-        },
-        hidden: true,
+    },
+    {
+      path: "returnApplyDetail",
+      name: "returnApplyDetail",
+      component: OrderReturnApplyDetail,
+      meta: {
+        title: "退货原因详情",
       },
+      hidden: true,
+    },
     ],
   },
   {
@@ -303,140 +314,140 @@ export const asyncRouterMap = [{
       icon: "sms",
     },
     children: [{
-        path: "flash",
-        name: "flash",
-        component: Layout,
-        meta: {
-          title: "秒杀活动列表",
-          icon: "sms-flash",
-        },
+      path: "flash",
+      name: "flash",
+      component: Layout,
+      meta: {
+        title: "秒杀活动列表",
+        icon: "sms-flash",
       },
-      {
-        path: "flashSession",
-        name: "flashSession",
-        component: Layout,
-        meta: {
-          title: "秒杀时间段列表",
-        },
-        hidden: true,
+    },
+    {
+      path: "flashSession",
+      name: "flashSession",
+      component: Layout,
+      meta: {
+        title: "秒杀时间段列表",
       },
-      {
-        path: "selectSession",
-        name: "selectSession",
-        component: Layout,
-        meta: {
-          title: "秒杀时间段选择",
-        },
-        hidden: true,
+      hidden: true,
+    },
+    {
+      path: "selectSession",
+      name: "selectSession",
+      component: Layout,
+      meta: {
+        title: "秒杀时间段选择",
       },
-      {
-        path: "flashProductRelation",
-        name: "flashProductRelation",
-        component: Layout,
-        meta: {
-          title: "秒杀商品列表",
-        },
-        hidden: true,
+      hidden: true,
+    },
+    {
+      path: "flashProductRelation",
+      name: "flashProductRelation",
+      component: Layout,
+      meta: {
+        title: "秒杀商品列表",
       },
-      {
-        path: "coupon",
-        name: "coupon",
-        component: CouponList,
-        meta: {
-          title: "优惠券列表",
-          icon: "sms-coupon",
-        },
+      hidden: true,
+    },
+    {
+      path: "coupon",
+      name: "coupon",
+      component: CouponList,
+      meta: {
+        title: "优惠券列表",
+        icon: "sms-coupon",
       },
-      {
-        path: "addCoupon",
-        name: "addCoupon",
-        component: Layout,
-        meta: {
-          title: "添加优惠券",
-        },
-        hidden: true,
+    },
+    {
+      path: "addCoupon",
+      name: "addCoupon",
+      component: AddCoupon,
+      meta: {
+        title: "添加优惠券",
       },
-      {
-        path: "updateCoupon",
-        name: "updateCoupon",
-        component: Layout,
-        meta: {
-          title: "修改优惠券",
-        },
-        hidden: true,
+      hidden: true,
+    },
+    {
+      path: "updateCoupon",
+      name: "updateCoupon",
+      component: UpdateCoupon,
+      meta: {
+        title: "修改优惠券",
       },
-      {
-        path: "couponHistory",
-        name: "couponHistory",
-        component: Layout,
-        meta: {
-          title: "优惠券领取详情",
-        },
-        hidden: true,
+      hidden: true,
+    },
+    {
+      path: "couponHistory",
+      name: "couponHistory",
+      component: CouponHistory,
+      meta: {
+        title: "优惠券领取详情",
       },
-      {
-        path: "brand",
-        name: "homeBrand",
-        component: Layout,
-        meta: {
-          title: "品牌推荐",
-          icon: "product-brand",
-        },
+      hidden: true,
+    },
+    {
+      path: "brand",
+      name: "homeBrand",
+      component: BrandRecommed,
+      meta: {
+        title: "品牌推荐",
+        icon: "product-brand",
       },
-      {
-        path: "new",
-        name: "homeNew",
-        component: Layout,
-        meta: {
-          title: "新品推荐",
-          icon: "sms-new",
-        },
+    },
+    {
+      path: "new",
+      name: "homeNew",
+      component: Layout,
+      meta: {
+        title: "新品推荐",
+        icon: "sms-new",
       },
-      {
-        path: "hot",
-        name: "homeHot",
-        component: Layout,
-        meta: {
-          title: "人气推荐",
-          icon: "sms-hot",
-        },
+    },
+    {
+      path: "hot",
+      name: "homeHot",
+      component: HotRecommend,
+      meta: {
+        title: "人气推荐",
+        icon: "sms-hot",
       },
-      {
-        path: "subject",
-        name: "homeSubject",
-        component: Layout,
-        meta: {
-          title: "专题推荐",
-          icon: "sms-subject",
-        },
+    },
+    {
+      path: "subject",
+      name: "homeSubject",
+      component: Layout,
+      meta: {
+        title: "专题推荐",
+        icon: "sms-subject",
       },
-      {
-        path: "advertise",
-        name: "homeAdvertise",
-        component: Layout,
-        meta: {
-          title: "广告列表",
-          icon: "sms-ad",
-        },
+    },
+    {
+      path: "advertise",
+      name: "homeAdvertise",
+      component: Layout,
+      meta: {
+        title: "广告列表",
+        icon: "sms-ad",
       },
-      {
-        path: "addAdvertise",
-        name: "addHomeAdvertise",
-        component: Layout,
-        meta: {
-          title: "添加广告",
-        },
-        hidden: true,
+    },
+    {
+      path: "addAdvertise",
+      name: "addHomeAdvertise",
+      component: Layout,
+      meta: {
+        title: "添加广告",
       },
-      {
-        path: "updateAdvertise",
-        name: "updateHomeAdvertise",
-        component: Layout,
-        meta: {
-          title: "编辑广告",
-        },
-        hidden: true,
+      hidden: true,
+    },
+    {
+      path: "updateAdvertise",
+      name: "updateHomeAdvertise",
+      component: Layout,
+      meta: {
+        title: "编辑广告",
       },
+      hidden: true,
+    },
     ],
   },
   {
@@ -449,86 +460,86 @@ export const asyncRouterMap = [{
       icon: "ums",
     },
     children: [{
-        path: "admin",
-        name: "admin",
-        component: Layout,
-        meta: {
-          title: "用户列表",
-          icon: "ums-admin",
-        },
+      path: "admin",
+      name: "admin",
+      component: Layout,
+      meta: {
+        title: "用户列表",
+        icon: "ums-admin",
       },
-      {
-        path: "role",
-        name: "role",
-        component: Layout,
-        meta: {
-          title: "角色列表",
-          icon: "ums-role",
-        },
+    },
+    {
+      path: "role",
+      name: "role",
+      component: Layout,
+      meta: {
+        title: "角色列表",
+        icon: "ums-role",
       },
-      {
-        path: "allocMenu",
-        name: "allocMenu",
-        component: Layout,
-        meta: {
-          title: "分配菜单",
-        },
-        hidden: true,
+    },
+    {
+      path: "allocMenu",
+      name: "allocMenu",
+      component: Layout,
+      meta: {
+        title: "分配菜单",
       },
-      {
-        path: "allocResource",
-        name: "allocResource",
-        component: Layout,
-        meta: {
-          title: "分配资源",
-        },
-        hidden: true,
+      hidden: true,
+    },
+    {
+      path: "allocResource",
+      name: "allocResource",
+      component: Layout,
+      meta: {
+        title: "分配资源",
       },
-      {
-        path: "menu",
-        name: "menu",
-        component: Layout,
-        meta: {
-          title: "菜单列表",
-          icon: "ums-menu",
-        },
+      hidden: true,
+    },
+    {
+      path: "menu",
+      name: "menu",
+      component: Layout,
+      meta: {
+        title: "菜单列表",
+        icon: "ums-menu",
       },
-      {
-        path: "addMenu",
-        name: "addMenu",
-        component: Layout,
-        meta: {
-          title: "添加菜单",
-        },
-        hidden: true,
+    },
+    {
+      path: "addMenu",
+      name: "addMenu",
+      component: Layout,
+      meta: {
+        title: "添加菜单",
       },
-      {
-        path: "updateMenu",
-        name: "updateMenu",
-        component: Layout,
-        meta: {
-          title: "修改菜单",
-        },
-        hidden: true,
+      hidden: true,
+    },
+    {
+      path: "updateMenu",
+      name: "updateMenu",
+      component: Layout,
+      meta: {
+        title: "修改菜单",
       },
-      {
-        path: "resource",
-        name: "resource",
-        component: Layout,
-        meta: {
-          title: "资源列表",
-          icon: "ums-resource",
-        },
+      hidden: true,
+    },
+    {
+      path: "resource",
+      name: "resource",
+      component: Layout,
+      meta: {
+        title: "资源列表",
+        icon: "ums-resource",
       },
-      {
-        path: "resourceCategory",
-        name: "resourceCategory",
-        component: Layout,
-        meta: {
-          title: "资源分类",
-        },
-        hidden: true,
+    },
+    {
+      path: "resourceCategory",
+      name: "resourceCategory",
+      component: Layout,
+      meta: {
+        title: "资源分类",
       },
+      hidden: true,
+    },
     ],
   },
   {
