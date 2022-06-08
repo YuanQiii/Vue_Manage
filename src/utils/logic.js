@@ -108,3 +108,32 @@ export function getProductById(selectProductOptions, id) {
     });
     return temp
 }
+
+export function addItem(list, item) {
+    list.push(item)
+    return list
+}
+
+// 更新元素
+export function updateItem(list, item) {
+    let temp = []
+    list.forEach(element => {
+        if (element.id == item.id) {
+            temp.push(item)
+        } else {
+            temp.push(element)
+        }
+    });
+    return temp
+}
+
+// 删除元素
+export function deleteItemById(list, id) {
+    let temp = []
+    list.forEach(element => {
+        if (element.id != id) {
+            temp.push(element)
+        }
+    });
+    return temp
+}

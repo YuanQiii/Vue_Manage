@@ -70,6 +70,8 @@ const BrandRecommed = () =>
 const HotRecommend = () =>
   import("@/views/sms/hot/HotRecommend.vue");
 
+const AdminList = () => import('@/views/ums/admin/AdminList.vue')
+
 export const constantRouterMap = [{
   path: "/login",
   name: "login",
@@ -453,16 +455,16 @@ export const asyncRouterMap = [
   {
     path: "/ums",
     component: Layout,
-    redirect: "/ums/admin",
+    redirect: "/ums/adminList",
     name: "ums",
     meta: {
       title: "权限",
       icon: "ums",
     },
     children: [{
-      path: "admin",
-      name: "admin",
-      component: Layout,
+      path: "adminList",
+      name: "adminList",
+      component: AdminList,
       meta: {
         title: "用户列表",
         icon: "ums-admin",

@@ -24,7 +24,6 @@
 
     <el-menu-item
       :index="getRoutePath(route.path, route.children[0].path)"
-      class="submenu"
       @click.native="select(getRoutePath(route.path, route.children[0].path))"
       v-else
     >
@@ -72,10 +71,10 @@ export default {
     margin-right: 20px;
   }
 }
-// .el-menu-item {
-//   background-color: #1f2d3d !important;
-// }
-// .el-menu-item:hover {
-//   background-color: #001528 !important;
-// }
+.el-menu-item {
+  background-color: #1f2d3d !important;
+}
+.el-menu-item:hover {
+  background-color: #001528 !important;
+}
 </style>
