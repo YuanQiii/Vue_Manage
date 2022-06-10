@@ -71,6 +71,7 @@ const HotRecommend = () =>
   import("@/views/sms/hot/HotRecommend.vue");
 
 const AdminList = () => import('@/views/ums/admin/AdminList.vue')
+const RoleList = () => import('@/views/ums/role/RoleList')
 
 export const constantRouterMap = [{
   path: "/login",
@@ -471,9 +472,9 @@ export const asyncRouterMap = [
       },
     },
     {
-      path: "role",
-      name: "role",
-      component: Layout,
+      path: "roleList",
+      name: "roleList",
+      component: RoleList,
       meta: {
         title: "角色列表",
         icon: "ums-role",

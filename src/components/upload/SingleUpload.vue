@@ -2,7 +2,7 @@
  * @Autor: YuanQiii
  * @GitHub: https://github.com/YuanQiii
  * @Date: 2022-04-06 15:45:54
- * @FilePath: \vue_manage\src\components\upload\singleUpload.vue
+ * @FilePath: \vue_manage\src\components\upload\SingleUpload.vue
 -->
 <template>
   <div>

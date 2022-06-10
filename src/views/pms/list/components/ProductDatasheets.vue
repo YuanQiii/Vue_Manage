@@ -136,6 +136,7 @@ export default {
   methods: {
     handleSelectionChange(selection) {
       this.$emit("selectionChange", selection);
+      console.log(selection)
     },
     handlePublishStatusChange() {},
     handleNewStatusChange() {},

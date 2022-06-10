@@ -38,7 +38,7 @@
               style="width: 203px"
               v-model="listQuery.keyword"
               placeholder="商品名称"
-            ></el-input>
+            ></el-input>·
           </el-form-item>
           <el-form-item label="商品货号：">
             <el-input
