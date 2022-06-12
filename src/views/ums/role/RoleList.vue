@@ -1,189 +1,153 @@
 <template>
   <div class="role-list">
-    <datasheets :all-data="allData"
-                :table-data-structure="tableDataStructure"
-                :filter-data="filterData"
-                :operate-data="operateData"
-                :batch-operate-options="batchOperateOptions"
-                @handleBatchOperate="handleBatchOperate"
-                @handleSizeChange="handleSizeChange" />
+    <datasheets
+      :all-data="allData"
+      :filter-data="filterData"
+      :operate-data="operateData"
+      :total="allData.length"
+    >
+      <template v-slot="prop">
+        <el-table :data="prop.tableData" border>
+          <el-table-column prop="id" label="编号" width="100" align="center" />
+          <el-table-column prop="name" label="角色名称" align="center" />
+          <el-table-column prop="description" label="描述" align="center" />
+          <el-table-column prop="adminCount" label="用户数" align="center" />
+          <el-table-column label="添加时间" align="center">
+            <template v-slot="scope">
+              <p>
+                {{ scope.row.createTime | formatDate }}
+              </p>
+            </template>
+          </el-table-column>
+          <el-table-column label="是否启用" align="center">
+            <template v-slot="scope">
+              <el-switch
+                v-model="scope.row.status"
+                @change="handleStatusChange(scope.row)"
+                :active-value="1"
+                :inactive-value="0"
+              >
+              </el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center">
+            <template v-slot="scope">
+              <el-button type="text" @click="handleAssignMenu(scope.row)"
+                >分配菜单</el-button
+              >
+              <el-button type="text" @click="handleAssignSource(scope.row)"
+                >分配资源</el-button
+              >
+              <el-button type="text" @click="handleEdit(scope.row)"
+                >编辑</el-button
+              >
+              <el-button type="text" @click="handleDelete(scope.row)"
+                >删除</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+    </datasheets>
+
+    <el-dialog
+      title="添加角色"
+      :visible="addDialogVisible"
+      width="40%"
+      class="dialog"
+    >
+      <el-form :model="addRoleInfo" label-width="80px" class="dialog-form">
+        <el-form-item label="角色名称">
+          <el-input v-model="addRoleInfo.name" />
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Datasheets from "@/components/datasheets/Datasheets";
 
-import {roleListApi} from '@/api/permissions'
-import {productListApi} from '@/api/product'
+import { roleListApi } from "@/api/permissions";
 export default {
   name: "RoleList",
-  components: {Datasheets},
+  components: { Datasheets },
   created() {
-    this.getRoleList()
+    this.getRoleList();
   },
-  data(){
+  data() {
     return {
       allData: [],
       filterData: {
         input: [
           {
-            label: '姓名：',
-            keyword: 'name',
-            placeholder: '请输入姓名'
-          }
+            label: "姓名：",
+            keyword: "name",
+            placeholder: "请输入姓名",
+          },
         ],
-        select: [
-          {
-            label: '品牌：',
-            keyword: 'brand',
-            placeholder: '请选择品牌',
-            options: [
-              {
-                label: '小米',
-                value: 'xiaomi'
-              }
-            ]
-          }
-        ],
-        cascader: [
-          {
-            label: '分类：',
-            keyword: 'category',
-            placeholder: '请选择分类',
-            options: [
-              {
-                value: 'shejiyuanze',
-                label: '设计原则',
-                children: [{
-                  value: 'yizhi',
-                  label: '一致'
-                }, {
-                  value: 'fankui',
-                  label: '反馈'
-                }, {
-                  value: 'xiaolv',
-                  label: '效率'
-                }, {
-                  value: 'kekong',
-                  label: '可控'
-                }]
-              }
-            ]
-          }
-        ]
-
       },
       operateData: [
         {
-          btnName: '添加',
-          callback: () => {
-            console.log('添加')
-          }
+          btnName: "添加",
+          callback: this.handleAdd,
         },
       ],
-      batchOperateOptions: [
-        {
-          label: "商品上架",
-          value: "publishOn",
-        },
-      ],
-      tableDataStructure: [
-        {
-          type: 'selection'
-        },
-        {
-          type: 'text',
-          label: '编号',
-          prop: 'id',
-          width: 100
-        },
-        {
-          type: 'image',
-          label: '商品图片',
-          prop: 'pic',
-          width: 120,
-          picStyle: 'height: 80px'
-        },
-        [
-          {
-            type: 'switch',
-            label: '标签',
-            keyword: '上架',
-            prop: 'publishStatus',
-            callback: () => {}
-          },
-          {
-            type: 'switch',
-            label: '标签',
-            keyword: '新品',
-            prop: 'newStatus',
-            callback: () => {}
-          },
-          {
-            type: 'switch',
-            label: '标签',
-            keyword: '推荐',
-            prop: 'recommandStatus',
-            callback: () => {}
-          },
-        ],
-        [
-          {
-            type: 'text',
-            label: '审核状态',
-            prop: 'verifyStatus',
-          },
-          {
-            type: 'button-text',
-            label: '审核状态',
-            prop: 'verifyStatus',
-            callback: () => {}
-          }
-        ],
-        [
-          {
-            type: 'button-mini',
-            label: '编辑',
-            callback: () => {}
-          },
-          {
-            type: 'button-mini-danger',
-            label: '编辑',
-            callback: () => {}
-          },
-        ]
-      ]
-    }
+      addDialogVisible: true,
+      addRoleInfo: {},
+    };
   },
   methods: {
-
     // 获取角色列表
     getRoleList() {
-      // roleListApi().then(response => {
-      //   console.log(response)
-      //   this.allData = response.data
-      // })
-      productListApi().then(response => {
-        console.log(response)
-        this.allData = response.data.list
-      })
+      roleListApi().then((response) => {
+        console.log(response);
+        this.allData = response.data;
+      });
     },
 
-    handleBatchOperate(value){
-      console.log(value)
+    // 是否启用
+    handleStatusChange(row) {
+      this.$message({
+        type: "success",
+        message: "已更改",
+      });
     },
-    handleSizeChange(value){
-      console.log(value)
+
+    // 添加
+    handleAdd() {
+      console.log("handleAdd");
     },
-    handleCurrentChange(value){
-      console.log(value)
-    }
-  }
-}
+
+    // 分配菜单
+    handleAssignMenu(row) {
+      console.log("handleAssignMenu");
+    },
+
+    // 分配资源
+    handleAssignSource(row) {
+      console.log("handleAssignSource");
+    },
+
+    // 编辑
+    handleEdit(row) {
+      console.log("handleEdit");
+    },
+
+    // 删除
+    handleDelete(row) {
+      console.log("handleDelete");
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
-.role-list{
-  margin-top: 40px;
+.role-list {
+  .dialog {
+    text-align: center;
+    .dialog-form {
+    }
+  }
 }
 </style>

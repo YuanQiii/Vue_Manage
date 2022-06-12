@@ -59,6 +59,7 @@ export default {
 <style lang="less" scoped>
 .navbar {
   display: flex;
+  margin-bottom: 40px;
   .hamburger {
     margin-left: 5px;
     margin-right: 20px;

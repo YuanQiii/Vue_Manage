@@ -19,7 +19,6 @@ import VCharts from 'v-charts'
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 
-
 Vue.use(ElementUI);
 Vue.use(VCharts);
 
@@ -28,6 +27,10 @@ Vue.config.productionTip = false;
 Vue.filter("moneyFormat", (value) => {
   return "¥" + Number(value).toFixed(2);
 });
+Vue.filter('formatDate', value => {
+  return value.replace('T', ' ').slice(0, -10)
+})
+
 
 new Vue({
   router,
