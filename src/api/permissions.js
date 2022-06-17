@@ -26,3 +26,15 @@ export function adminDetailApi(id) {
         }
     });
 }
+
+
+// 角色菜单列表
+export function roleMenuListApi(id) {
+    return request({
+        url: "/roleMenuList",
+        method: "get",
+        params: {
+            id
+        }
+    });
+}

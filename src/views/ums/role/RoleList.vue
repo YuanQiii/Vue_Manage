@@ -30,20 +30,18 @@
               </el-switch>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center">
+          <el-table-column label="操作" align="center" width="150" >
             <template v-slot="scope">
-              <el-button type="text" @click="handleAssignMenu(scope.row)"
+              <el-button type="text" size="mini" @click="handleAllocMenu(scope.row)"
                 >分配菜单</el-button
               >
-              <el-button type="text" @click="handleAssignSource(scope.row)"
-                >分配资源</el-button
-              >
-              <el-button type="text" @click="handleEdit(scope.row)"
-                >编辑</el-button
-              >
-              <el-button type="text" @click="handleDelete(scope.row)"
-                >删除</el-button
-              >
+<!--              <el-button type="text" size="mini" @click="handleAssignSource(scope.row)"-->
+<!--                >分配资源</el-button-->
+<!--              >-->
+<!--              <el-button type="text" size="mini" @click="handleEdit(scope.row)"-->
+<!--                >编辑</el-button-->
+<!--              >-->
+<!--              <el-button type="text" size="mini" @click="handleDelete(scope.row)">删除</el-button>-->
             </template>
           </el-table-column>
         </el-table>
@@ -52,15 +50,25 @@
 
     <el-dialog
       title="添加角色"
-      :visible="addDialogVisible"
+      :visible.sync="addDialogVisible"
       width="40%"
       class="dialog"
     >
-      <el-form :model="addRoleInfo" label-width="80px" class="dialog-form">
-        <el-form-item label="角色名称">
-          <el-input v-model="addRoleInfo.name" />
-        </el-form-item>
-      </el-form>
+      <div class="wrap">
+        <el-form :model="addRoleInfo" label-width="100px" class="dialog-form">
+          <el-form-item label="角色名称：" >
+            <el-input size="mini" v-model="addRoleInfo.name" />
+          </el-form-item>
+          <el-form-item label="描述：">
+            <el-input type="textarea" :rows="5" v-model="addRoleInfo.description"/>
+          </el-form-item>
+          <el-form-item label="是否启用：">
+            <el-radio v-model="addRoleInfo.status" :label="1">是</el-radio>
+            <el-radio v-model="addRoleInfo.status" :label="0">否</el-radio>
+          </el-form-item>
+        </el-form>
+      </div>
+
     </el-dialog>
   </div>
 </template>
@@ -93,8 +101,12 @@ export default {
           callback: this.handleAdd,
         },
       ],
-      addDialogVisible: true,
-      addRoleInfo: {},
+      addDialogVisible: false,
+      addRoleInfo: {
+        name: null,
+        description: null,
+        status: 1
+      },
     };
   },
   methods: {
@@ -120,8 +132,13 @@ export default {
     },
 
     // 分配菜单
-    handleAssignMenu(row) {
-      console.log("handleAssignMenu");
+    handleAllocMenu(row) {
+      this.$router.push({
+        path: 'allocMenu',
+        query: {
+          id: row.id
+        }
+      })
     },
 
     // 分配资源
@@ -145,7 +162,10 @@ export default {
 <style lang="less" scoped>
 .role-list {
   .dialog {
-    text-align: center;
+    .wrap{
+      width: 70%;
+      margin: 0 auto;
+    }
     .dialog-form {
     }
   }

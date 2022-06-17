@@ -72,7 +72,7 @@ const HotRecommend = () =>
 
 const AdminList = () => import('@/views/ums/admin/AdminList.vue')
 const RoleList = () => import('@/views/ums/role/RoleList')
-
+const AllocMenu = () => import('@/views/ums/role/AllocMenu')
 export const constantRouterMap = [{
   path: "/login",
   name: "login",
@@ -165,42 +165,6 @@ export const asyncRouterMap = [
       component: UpdateProductCate,
       meta: {
         title: "修改商品分类",
-      },
-      hidden: true,
-    },
-    {
-      path: "productAttr",
-      name: "productAttr",
-      component: Layout,
-      meta: {
-        title: "商品类型",
-        icon: "product-attr",
-      },
-    },
-    {
-      path: "productAttrList",
-      name: "productAttrList",
-      component: Layout,
-      meta: {
-        title: "商品属性列表",
-      },
-      hidden: true,
-    },
-    {
-      path: "addProductAttr",
-      name: "addProductAttr",
-      component: Layout,
-      meta: {
-        title: "添加商品属性",
-      },
-      hidden: true,
-    },
-    {
-      path: "updateProductAttr",
-      name: "updateProductAttr",
-      component: Layout,
-      meta: {
-        title: "修改商品属性",
       },
       hidden: true,
     },
@@ -316,42 +280,7 @@ export const asyncRouterMap = [
       title: "营销",
       icon: "sms",
     },
-    children: [{
-      path: "flash",
-      name: "flash",
-      component: Layout,
-      meta: {
-        title: "秒杀活动列表",
-        icon: "sms-flash",
-      },
-    },
-    {
-      path: "flashSession",
-      name: "flashSession",
-      component: Layout,
-      meta: {
-        title: "秒杀时间段列表",
-      },
-      hidden: true,
-    },
-    {
-      path: "selectSession",
-      name: "selectSession",
-      component: Layout,
-      meta: {
-        title: "秒杀时间段选择",
-      },
-      hidden: true,
-    },
-    {
-      path: "flashProductRelation",
-      name: "flashProductRelation",
-      component: Layout,
-      meta: {
-        title: "秒杀商品列表",
-      },
-      hidden: true,
-    },
+    children: [
     {
       path: "coupon",
       name: "coupon",
@@ -398,15 +327,6 @@ export const asyncRouterMap = [
       },
     },
     {
-      path: "new",
-      name: "homeNew",
-      component: Layout,
-      meta: {
-        title: "新品推荐",
-        icon: "sms-new",
-      },
-    },
-    {
       path: "hot",
       name: "homeHot",
       component: HotRecommend,
@@ -414,42 +334,6 @@ export const asyncRouterMap = [
         title: "人气推荐",
         icon: "sms-hot",
       },
-    },
-    {
-      path: "subject",
-      name: "homeSubject",
-      component: Layout,
-      meta: {
-        title: "专题推荐",
-        icon: "sms-subject",
-      },
-    },
-    {
-      path: "advertise",
-      name: "homeAdvertise",
-      component: Layout,
-      meta: {
-        title: "广告列表",
-        icon: "sms-ad",
-      },
-    },
-    {
-      path: "addAdvertise",
-      name: "addHomeAdvertise",
-      component: Layout,
-      meta: {
-        title: "添加广告",
-      },
-      hidden: true,
-    },
-    {
-      path: "updateAdvertise",
-      name: "updateHomeAdvertise",
-      component: Layout,
-      meta: {
-        title: "编辑广告",
-      },
-      hidden: true,
     },
     ],
   },
@@ -483,7 +367,7 @@ export const asyncRouterMap = [
     {
       path: "allocMenu",
       name: "allocMenu",
-      component: Layout,
+      component: AllocMenu,
       meta: {
         title: "分配菜单",
       },
