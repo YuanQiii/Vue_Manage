@@ -30,18 +30,29 @@
               </el-switch>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="150" >
+          <el-table-column label="操作" align="center" width="150">
             <template v-slot="scope">
-              <el-button type="text" size="mini" @click="handleAllocMenu(scope.row)"
+              <el-button
+                type="text"
+                size="mini"
+                @click="handleAllocMenu(scope.row)"
                 >分配菜单</el-button
               >
-<!--              <el-button type="text" size="mini" @click="handleAssignSource(scope.row)"-->
-<!--                >分配资源</el-button-->
-<!--              >-->
-<!--              <el-button type="text" size="mini" @click="handleEdit(scope.row)"-->
-<!--                >编辑</el-button-->
-<!--              >-->
-<!--              <el-button type="text" size="mini" @click="handleDelete(scope.row)">删除</el-button>-->
+              <el-button
+                type="text"
+                size="mini"
+                @click="handleAllocResource(scope.row)"
+                >分配资源</el-button
+              >
+              <el-button type="text" size="mini" @click="handleEdit(scope.row)"
+                >编辑</el-button
+              >
+              <el-button
+                type="text"
+                size="mini"
+                @click="handleDelete(scope.row)"
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -49,18 +60,22 @@
     </datasheets>
 
     <el-dialog
-      title="添加角色"
+      :title="isEdit ? '编辑角色' : '添加角色'"
       :visible.sync="addDialogVisible"
       width="40%"
       class="dialog"
     >
       <div class="wrap">
         <el-form :model="addRoleInfo" label-width="100px" class="dialog-form">
-          <el-form-item label="角色名称：" >
+          <el-form-item label="角色名称：">
             <el-input size="mini" v-model="addRoleInfo.name" />
           </el-form-item>
           <el-form-item label="描述：">
-            <el-input type="textarea" :rows="5" v-model="addRoleInfo.description"/>
+            <el-input
+              type="textarea"
+              :rows="5"
+              v-model="addRoleInfo.description"
+            />
           </el-form-item>
           <el-form-item label="是否启用：">
             <el-radio v-model="addRoleInfo.status" :label="1">是</el-radio>
@@ -68,7 +83,14 @@
           </el-form-item>
         </el-form>
       </div>
-
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDialogVisible = false" size="small"
+          >取 消</el-button
+        >
+        <el-button type="primary" @click="handleDialogConfirm" size="small"
+          >确 定</el-button
+        >
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -89,9 +111,9 @@ export default {
       filterData: {
         input: [
           {
-            label: "姓名：",
+            label: "角色名称：",
             keyword: "name",
-            placeholder: "请输入姓名",
+            placeholder: "请输入名称",
           },
         ],
       },
@@ -102,11 +124,26 @@ export default {
         },
       ],
       addDialogVisible: false,
-      addRoleInfo: {
+      defaultRoleInfo: {
+        id: 0,
         name: null,
         description: null,
-        status: 1
+        status: 1,
+        createTime: "2018-09-30T07:53:45.000+00:00",
+        sort: 0,
+        adminCount: 0,
       },
+      addRoleInfo: {
+        id: 0,
+        name: null,
+        description: null,
+        status: 1,
+        createTime: "2018-09-30T07:53:45.000+00:00",
+        sort: 0,
+        adminCount: 0,
+      },
+
+      isEdit: false,
     };
   },
   methods: {
@@ -128,32 +165,60 @@ export default {
 
     // 添加
     handleAdd() {
-      console.log("handleAdd");
+      this.isEdit = false;
+      this.addDialogVisible = true;
+      this.addRoleInfo = this.defaultRoleInfo;
+    },
+
+    // 编辑或添加确认
+    handleDialogConfirm() {
+      if (this.isEdit) {
+        this.allData.forEach((element, index) => {
+          if (element.id === this.addRoleInfo.id) {
+            this.$set(this.allData, index, this.addRoleInfo);
+          }
+        });
+      } else {
+        this.allData.push(
+          Object.assign(this.addRoleInfo, { id: this.allData.length + 1 })
+        );
+      }
+      this.addDialogVisible = false;
     },
 
     // 分配菜单
     handleAllocMenu(row) {
       this.$router.push({
-        path: 'allocMenu',
+        path: "allocMenu",
         query: {
-          id: row.id
-        }
-      })
+          id: row.id,
+        },
+      });
     },
 
     // 分配资源
-    handleAssignSource(row) {
-      console.log("handleAssignSource");
+    handleAllocResource(row) {
+      this.$router.push({
+        path: "allocResource",
+        query: {
+          id: row.id,
+        },
+      });
     },
 
     // 编辑
     handleEdit(row) {
-      console.log("handleEdit");
+      this.isEdit = true;
+      this.addDialogVisible = true;
+      this.addRoleInfo = { ...this.allData[row.id - 1] };
     },
 
     // 删除
     handleDelete(row) {
-      console.log("handleDelete");
+      this.$message({
+        type: "success",
+        message: "删除",
+      });
     },
   },
 };
@@ -162,7 +227,7 @@ export default {
 <style lang="less" scoped>
 .role-list {
   .dialog {
-    .wrap{
+    .wrap {
       width: 70%;
       margin: 0 auto;
     }

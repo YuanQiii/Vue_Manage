@@ -38,3 +38,23 @@ export function roleMenuListApi(id) {
         }
     });
 }
+
+
+// 角色资源分类
+export function roleResourceCategoryListApi() {
+    return request({
+        url: "/roleResourceCategoryList",
+        method: "get",
+    });
+}
+
+// 角色资源列表
+export function roleResourceListApi(id) {
+    return request({
+        url: "/roleResourceList",
+        method: "get",
+        params: {
+            id
+        }
+    });
+}

@@ -73,6 +73,8 @@ const HotRecommend = () =>
 const AdminList = () => import('@/views/ums/admin/AdminList.vue')
 const RoleList = () => import('@/views/ums/role/RoleList')
 const AllocMenu = () => import('@/views/ums/role/AllocMenu')
+const AllocResource = () => import('@/views/ums/role/AllocResource')
+
 export const constantRouterMap = [{
   path: "/login",
   name: "login",
@@ -281,60 +283,60 @@ export const asyncRouterMap = [
       icon: "sms",
     },
     children: [
-    {
-      path: "coupon",
-      name: "coupon",
-      component: CouponList,
-      meta: {
-        title: "优惠券列表",
-        icon: "sms-coupon",
+      {
+        path: "coupon",
+        name: "coupon",
+        component: CouponList,
+        meta: {
+          title: "优惠券列表",
+          icon: "sms-coupon",
+        },
       },
-    },
-    {
-      path: "addCoupon",
-      name: "addCoupon",
-      component: AddCoupon,
-      meta: {
-        title: "添加优惠券",
+      {
+        path: "addCoupon",
+        name: "addCoupon",
+        component: AddCoupon,
+        meta: {
+          title: "添加优惠券",
+        },
+        hidden: true,
       },
-      hidden: true,
-    },
-    {
-      path: "updateCoupon",
-      name: "updateCoupon",
-      component: UpdateCoupon,
-      meta: {
-        title: "修改优惠券",
+      {
+        path: "updateCoupon",
+        name: "updateCoupon",
+        component: UpdateCoupon,
+        meta: {
+          title: "修改优惠券",
+        },
+        hidden: true,
       },
-      hidden: true,
-    },
-    {
-      path: "couponHistory",
-      name: "couponHistory",
-      component: CouponHistory,
-      meta: {
-        title: "优惠券领取详情",
+      {
+        path: "couponHistory",
+        name: "couponHistory",
+        component: CouponHistory,
+        meta: {
+          title: "优惠券领取详情",
+        },
+        hidden: true,
       },
-      hidden: true,
-    },
-    {
-      path: "brand",
-      name: "homeBrand",
-      component: BrandRecommed,
-      meta: {
-        title: "品牌推荐",
-        icon: "product-brand",
+      {
+        path: "brand",
+        name: "homeBrand",
+        component: BrandRecommed,
+        meta: {
+          title: "品牌推荐",
+          icon: "product-brand",
+        },
       },
-    },
-    {
-      path: "hot",
-      name: "homeHot",
-      component: HotRecommend,
-      meta: {
-        title: "人气推荐",
-        icon: "sms-hot",
+      {
+        path: "hot",
+        name: "homeHot",
+        component: HotRecommend,
+        meta: {
+          title: "人气推荐",
+          icon: "sms-hot",
+        },
       },
-    },
     ],
   },
   {
@@ -376,7 +378,7 @@ export const asyncRouterMap = [
     {
       path: "allocResource",
       name: "allocResource",
-      component: Layout,
+      component: AllocResource,
       meta: {
         title: "分配资源",
       },

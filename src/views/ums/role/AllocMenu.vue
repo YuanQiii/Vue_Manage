@@ -1,10 +1,12 @@
 <template>
   <el-card shadow="never" style="padding-left: 80px">
-    <el-tree ref="menuTree"
-             :data="roleMenuTree"
-             show-checkbox node-key="id"
-             :default-expand-all="true"
-             :default-checked-keys="checkedKeys"
+    <el-tree
+      ref="menuTree"
+      :data="roleMenuTree"
+      show-checkbox
+      node-key="id"
+      :default-expand-all="true"
+      :default-checked-keys="checkedKeys"
     />
 
     <div class="bottom">
@@ -15,77 +17,79 @@
 </template>
 
 <script>
-import {roleMenuListApi} from '@/api/permissions'
+import { roleMenuListApi } from "@/api/permissions";
 
 export default {
   name: "AllocMenu",
   created() {
-    this.getRoleMenuList()
+    this.getRoleMenuList();
   },
-  data(){
+  data() {
     return {
       roleMenuTree: [],
       checkedKeys: [],
-    }
+    };
   },
   methods: {
-
     // 获取菜单列表
-    getRoleMenuList(){
-      roleMenuListApi(1).then(response => {
-        this.roleMenuTree = this.handleListToTree(response.data)
-      })
+    getRoleMenuList() {
+      roleMenuListApi(this.$route.query.id).then((response) => {
+        this.roleMenuTree = this.handleListToTree(response.data);
+      });
     },
 
     // 列表转树形
-    handleListToTree(list){
-      let temp = []
-      list.forEach(item => {
+    handleListToTree(list) {
+      let temp = [];
+      list.forEach((item) => {
+        this.handleCheckedKeys(item);
 
-        this.handleCheckedKeys(item)
-
-        if(item.parentId === 0){
+        if (item.parentId === 0) {
           temp.push({
             id: item.id,
             label: item.title,
-            children: []
-          })
-        }else{
+            children: [],
+          });
+        } else {
           temp.forEach((value, index) => {
-            if(value.id === item.parentId){
+            if (value.id === item.parentId) {
               temp[index].children.push({
                 id: item.id,
-                label: item.title
-              })
+                label: item.title,
+              });
             }
-          })
+          });
         }
-      })
-      return temp
+      });
+      return temp;
     },
 
     // 已选择的列表
-    handleCheckedKeys(value){
-      if(value.status){
-        this.checkedKeys.push(value.id)
+    handleCheckedKeys(value) {
+      if (value.status) {
+        this.checkedKeys.push(value.id);
       }
     },
 
-    handleSave(){
-      this.$confirm('是否分配菜单？').then(() => {
-        this.$router.back()
-      })
+    // 保存
+    handleSave() {
+      this.$confirm("是否分配菜单？")
+        .then(() => {
+          this.$router.back();
+        })
+        .catch(() => {});
     },
 
-    handleCancel(){
-      this.$refs.menuTree.setCheckedKeys([])
-    }
-  }
-}
+    // 清空
+    handleCancel() {
+      this.$refs.menuTree.setCheckedKeys([]);
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
-.bottom{
+.bottom {
   text-align: center;
   margin-top: 40px;
 }
