@@ -74,6 +74,9 @@ const AdminList = () => import('@/views/ums/admin/AdminList.vue')
 const RoleList = () => import('@/views/ums/role/RoleList')
 const AllocMenu = () => import('@/views/ums/role/AllocMenu')
 const AllocResource = () => import('@/views/ums/role/AllocResource')
+const RoleMenuList = () => import('@/views/ums/menu/RoleMenuList')
+const AddRoleMenu = () => import('@/views/ums/menu/AddRoleMenu')
+const UpdateRoleMenu = () => import('@/views/ums/menu/UpdateRoleMenu')
 
 export const constantRouterMap = [{
   path: "/login",
@@ -367,6 +370,15 @@ export const asyncRouterMap = [
       },
     },
     {
+      path: "roleMenuList",
+      name: "roleMenuList",
+      component: RoleMenuList,
+      meta: {
+        title: "菜单列表",
+        icon: "ums-menu",
+      },
+    },
+    {
       path: "allocMenu",
       name: "allocMenu",
       component: AllocMenu,
@@ -394,18 +406,18 @@ export const asyncRouterMap = [
       },
     },
     {
-      path: "addMenu",
-      name: "addMenu",
-      component: Layout,
+      path: "addRoleMenu",
+      name: "addRoleMenu",
+      component: AddRoleMenu,
       meta: {
         title: "添加菜单",
       },
       hidden: true,
     },
     {
-      path: "updateMenu",
-      name: "updateMenu",
-      component: Layout,
+      path: "updateRoleMenu",
+      name: "updateRoleMenu",
+      component: UpdateRoleMenu,
       meta: {
         title: "修改菜单",
       },

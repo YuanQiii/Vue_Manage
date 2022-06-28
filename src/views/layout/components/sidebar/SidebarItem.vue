@@ -6,7 +6,7 @@
 -->
 <template>
   <div class="sidebar-item">
-    <el-submenu :index="route.path" v-if="route.children.length != 1">
+    <el-submenu :index="route.path" v-if="route.children.length !== 1">
       <template slot="title">
         <svg-icon :icon-class="route.meta.icon" class="icon" />
         <span slot="title">{{ route.meta.title }}</span>

@@ -11,7 +11,6 @@
     <div class="bottom">
       <el-button type="primary" @click="handleSave">保存</el-button>
       <el-button @click="handleCancel">清空</el-button>
-      {{ checkedKeys }}
     </div>
   </el-card>
 </template>

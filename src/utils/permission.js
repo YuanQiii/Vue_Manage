@@ -21,7 +21,7 @@ router.beforeEach((to, from, next) => {
         path: "/",
       });
     } else {
-      if (store.state.user.roles.length == 0) {
+      if (store.state.user.roles.length === 0) {
         adminLoginApi().then((response) => {
           store.commit("user/SET_NAME", response.data.username);
           store.commit("user/SET_AVATAR", response.data.icon);

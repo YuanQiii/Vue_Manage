@@ -29,7 +29,7 @@ export function adminDetailApi(id) {
 
 
 // 角色菜单列表
-export function roleMenuListApi(id) {
+export function roleMenuListApi(id = 1) {
     return request({
         url: "/roleMenuList",
         method: "get",
@@ -39,6 +39,16 @@ export function roleMenuListApi(id) {
     });
 }
 
+// 角色菜单子级
+export function roleMenuChildrenApi(parentId) {
+    return request({
+        url: "/roleMenuChildren",
+        method: "get",
+        params: {
+            parentId
+        }
+    });
+}
 
 // 角色资源分类
 export function roleResourceCategoryListApi() {
