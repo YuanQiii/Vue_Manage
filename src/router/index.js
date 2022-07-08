@@ -77,6 +77,7 @@ const AllocResource = () => import('@/views/ums/role/AllocResource')
 const RoleMenuList = () => import('@/views/ums/menu/RoleMenuList')
 const AddRoleMenu = () => import('@/views/ums/menu/AddRoleMenu')
 const UpdateRoleMenu = () => import('@/views/ums/menu/UpdateRoleMenu')
+const ResourceList = () => import('@/views/ums/resource/ResourceList')
 
 export const constantRouterMap = [{
   path: "/login",
@@ -424,9 +425,9 @@ export const asyncRouterMap = [
       hidden: true,
     },
     {
-      path: "resource",
-      name: "resource",
-      component: Layout,
+      path: "resourceList",
+      name: "resourceList",
+      component: ResourceList,
       meta: {
         title: "资源列表",
         icon: "ums-resource",
