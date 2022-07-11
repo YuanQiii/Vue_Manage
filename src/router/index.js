@@ -78,6 +78,7 @@ const RoleMenuList = () => import('@/views/ums/menu/RoleMenuList')
 const AddRoleMenu = () => import('@/views/ums/menu/AddRoleMenu')
 const UpdateRoleMenu = () => import('@/views/ums/menu/UpdateRoleMenu')
 const ResourceList = () => import('@/views/ums/resource/ResourceList')
+const ResourceCategoryList = () => import('@/views/ums/resource/ResourceCategoryList')
 
 export const constantRouterMap = [{
   path: "/login",
@@ -434,9 +435,9 @@ export const asyncRouterMap = [
       },
     },
     {
-      path: "resourceCategory",
-      name: "resourceCategory",
-      component: Layout,
+      path: "resourceCategoryList",
+      name: "resourceCategoryList",
+      component: ResourceCategoryList,
       meta: {
         title: "资源分类",
       },

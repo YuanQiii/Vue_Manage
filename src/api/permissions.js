@@ -59,7 +59,7 @@ export function roleResourceCategoryListApi() {
 }
 
 // 角色资源列表
-export function roleResourceListApi(id) {
+export function roleResourceListApi(id = 1) {
     return request({
         url: "/roleResourceList",
         method: "get",

@@ -115,10 +115,10 @@ export function addItem(list, item) {
 }
 
 // 更新元素
-export function updateItem(list, item) {
+export function updateItem(list, item, keyword = 'id') {
     let temp = []
     list.forEach(element => {
-        if (element.id == item.id) {
+        if (element[keyword] == item[keyword]) {
             temp.push(item)
         } else {
             temp.push(element)
