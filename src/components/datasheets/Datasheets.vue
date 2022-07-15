@@ -101,6 +101,7 @@ export default {
     handleSearch(value) {
       this.filterConditions = value;
       this.tableData = this.handleData();
+      console.log(this.tableData)
     },
 
     // 批量操作
@@ -134,22 +135,29 @@ export default {
         if (keys.length) {
           keys.forEach((key) => {
             let value = this.filterConditions[key];
-
             if (value != null && (value === 0 || value !== "")) {
-              if (typeof value == "number") {
+              if (typeof value === "number") {
                 if (element[key] === value) {
                   flags.push(true);
                 } else {
                   flags.push(false);
                 }
-              } else {
+              }
+              else if(Array.isArray(value)){
+                if(element[key] === value[1]){
+                  flags.push(true);
+                }else{
+                  flags.push(false)
+                }
+              }else {
                 if (element[key] != null && element[key].includes(value)) {
                   flags.push(true);
                 } else {
                   flags.push(false);
                 }
               }
-            } else {
+            }
+            else {
               flags.push(true);
             }
           });
@@ -179,8 +187,9 @@ export default {
   }
   .bottom {
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
     margin-top: 20px;
+    margin-bottom: 40px;
     .batch-operate {
       margin-right: 40px;
     }

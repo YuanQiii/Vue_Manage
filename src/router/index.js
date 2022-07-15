@@ -28,7 +28,7 @@ const Layout = () => import("@/views/layout/Layout.vue");
 
 const Home = () => import("@/views/home/Home.vue");
 
-const ProductList = () => import("@/views/pms/list/ProductList.vue");
+const ProductList = () => import("@/views/pms/product/ProductList.vue");
 
 const AddProduct = () => import("@/views/pms/detail/AddProduct.vue");
 const UpdateProduct = () => import("@/views/pms/detail/UpdateProduct.vue");

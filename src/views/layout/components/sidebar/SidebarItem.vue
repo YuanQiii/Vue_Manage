@@ -16,6 +16,7 @@
         :index="getRoutePath(route.path, item.path)"
         v-for="(item, index) in filterRouteChildren(route.children)"
         :key="index"
+        class="children"
       >
         <svg-icon :icon-class="item.meta.icon" class="icon" />
         <span>{{ item.meta.title }}</span>
@@ -71,10 +72,13 @@ export default {
     margin-right: 20px;
   }
 }
-.el-menu-item {
+
+
+
+.el-menu-item.children {
   background-color: #1f2d3d !important;
 }
-.el-menu-item:hover {
+.el-menu-item.children:hover {
   background-color: #001528 !important;
 }
 </style>

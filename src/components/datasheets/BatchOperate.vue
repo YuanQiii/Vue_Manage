@@ -3,9 +3,9 @@
     <el-select size="small" v-model="batchOperateType" placeholder="批量操作">
       <el-option
           v-for="item in batchOperateOptions"
-          :key="item.value"
+          :key="item.label"
           :label="item.label"
-          :value="item.value"
+          :value="item.label"
       >
       </el-option>
     </el-select>

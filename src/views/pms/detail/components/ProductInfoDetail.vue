@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { productFilterCateApi } from "@/api/product";
+import { productCategoryApi } from "@/api/product";
 import { brandListApi } from "@/api/brand";
 
 export default {
@@ -98,7 +98,6 @@ export default {
 
       //选中商品分类的值
       selectProductCateValue: [],
-
       productCateOptions: [],
       brandOptions: [],
 
@@ -132,7 +131,7 @@ export default {
     };
   },
   created() {
-    this.getProductCateList();
+    this.getProductCategory();
     this.getBrandList();
   },
   computed: {
@@ -164,8 +163,8 @@ export default {
   },
   methods: {
     // 获取商品分类
-    getProductCateList() {
-      productFilterCateApi().then((response) => {
+    getProductCategory() {
+      productCategoryApi().then((response) => {
         let temp = [];
         response.data.forEach((element) => {
           let children = [];
@@ -183,6 +182,8 @@ export default {
             children: children,
           });
         });
+
+        console.log(temp)
         this.productCateOptions = temp;
       });
     },
@@ -216,7 +217,7 @@ export default {
       let name = "";
       this.productCateOptions.forEach((element) => {
         element.children.forEach((child) => {
-          if (child.value == id) {
+          if (child.value === id) {
             name = child.label;
           }
         });
@@ -228,7 +229,7 @@ export default {
     handleBrandChange(value) {
       let brandName = "";
       this.brandOptions.forEach((element) => {
-        if (element.value == value) {
+        if (element.value === value) {
           brandName = element.label;
         }
       });

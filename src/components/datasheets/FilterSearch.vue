@@ -34,7 +34,7 @@
             <el-input
                 v-model="filterConditions[value.keyword]"
                 :placeholder="value.placeholder"
-            ></el-input>
+                class="input"/>
           </el-form-item>
 
 <!--          选择器-->
@@ -43,6 +43,7 @@
                 v-model="filterConditions[value.keyword]"
                 :placeholder="value.placeholder"
                 clearable
+                class="input"
             >
               <el-option
                   v-for="item in value.options"
@@ -62,8 +63,7 @@
                 :placeholder="value.placeholder"
                 :options="value.options"
                 :props="{ expandTrigger: 'hover' }"
-            >
-            </el-cascader>
+                class="input"/>
           </el-form-item>
 
         </el-form>
@@ -114,6 +114,11 @@ export default {
           position: relative;
           top: 2px;
         }
+      }
+    }
+    .filter{
+      .input{
+        width: 200px;
       }
     }
   }

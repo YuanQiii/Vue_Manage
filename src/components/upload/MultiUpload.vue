@@ -28,7 +28,10 @@ export default {
   name: "MultiUpload",
   props: {
     //图片属性数组
-    value: Array,
+    value: {
+      type: Array,
+      default: () => []
+    },
     //最大上传图片数量
     maxCount: {
       type: Number,
@@ -44,11 +47,18 @@ export default {
   },
   computed: {
     fileList() {
-      let fileList = [];
-      this.value.forEach((element) => {
-        fileList.push(element);
-      });
-      return fileList;
+      if(this.value.length){
+        let temp = []
+        this.value.forEach((element, index) => {
+          temp.push({
+            name: index,
+            url: element
+          })
+        })
+        return temp
+      }else{
+        return []
+      }
     },
   },
   methods: {
@@ -73,7 +83,7 @@ export default {
 
     // 上传成功
     handleUploadSuccess(res, file) {
-      this.fileList.push({ name: res.name, url: res.url });
+      // this.fileList.push({ name: res.name, url: res.url });
       this.emitInput(this.fileList);
     },
 

@@ -35,7 +35,7 @@
             {{ productAttr.name }}：
 
             <!-- 规格多选框 -->
-            <div v-if="productAttr.handAddStatus == 0">
+            <div v-if="productAttr.handAddStatus === 0">
               <el-checkbox-group v-model="selectProductAttr[idx].values">
                 <el-checkbox
                   v-for="item in productAttr.inputList.split(',')"
@@ -139,7 +139,10 @@ export default {
   name: "ProductAttrDetail",
   components: { MultiUpload },
   props: {
-    value: Object,
+    value: {
+      type: Object,
+      default: () => ({})
+    },
     isEdit: {
       type: Boolean,
       default: false,
@@ -178,8 +181,6 @@ export default {
     //商品的主图和画册图片
     selectProductPics: {
       get: function () {
-        console.log(this.value.pic);
-
         let pics = [];
         if (
           this.value.pic === undefined ||
