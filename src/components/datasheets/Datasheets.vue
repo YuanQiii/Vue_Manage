@@ -11,7 +11,14 @@
 
     <slot :tableData="tableData" />
 
-    <div class="bottom">
+    <div
+      class="bottom"
+      :style="
+        batchOperateOptions.length
+          ? 'justify-content: space-between'
+          : 'justify-content: end'
+      "
+    >
       <batch-operate
         class="batch-operate"
         :batch-operate-options="batchOperateOptions"
@@ -101,7 +108,7 @@ export default {
     handleSearch(value) {
       this.filterConditions = value;
       this.tableData = this.handleData();
-      console.log(this.tableData)
+      console.log(this.tableData);
     },
 
     // 批量操作
@@ -142,22 +149,20 @@ export default {
                 } else {
                   flags.push(false);
                 }
-              }
-              else if(Array.isArray(value)){
-                if(element[key] === value[1]){
+              } else if (Array.isArray(value)) {
+                if (element[key] === value[1]) {
                   flags.push(true);
-                }else{
-                  flags.push(false)
+                } else {
+                  flags.push(false);
                 }
-              }else {
+              } else {
                 if (element[key] != null && element[key].includes(value)) {
                   flags.push(true);
                 } else {
                   flags.push(false);
                 }
               }
-            }
-            else {
+            } else {
               flags.push(true);
             }
           });
@@ -181,13 +186,13 @@ export default {
 
 <style lang="less" scoped>
 .datasheets {
+  margin-right: 40px;
   .data-operate {
     margin-top: 20px;
     margin-bottom: 20px;
   }
   .bottom {
     display: flex;
-    justify-content: space-between;
     margin-top: 20px;
     margin-bottom: 40px;
     .batch-operate {
