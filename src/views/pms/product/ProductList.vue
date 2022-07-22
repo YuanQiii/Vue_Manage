@@ -6,7 +6,8 @@
 -->
 <template>
   <div class="product-list">
-    <datasheets :all-data="allData" :filter-data="filterData" :total="total" :operate-data="operateData" :batch-operate-options="batchOperateOptions" @handleBatchOperate="handleBatchOperate">
+    <datasheets :all-data="allData" :filter-data="filterData" :total="total" :operate-data="operateData"
+                :batch-operate-options="batchOperateOptions" :multipleSelection="multipleSelection">
       <template v-slot="prop">
         <el-table
             :data="prop.tableData"
@@ -19,7 +20,7 @@
               width="60"
               align="center"
           ></el-table-column>
-          <el-table-column prop="id" label="编号" width="100" align="center" />
+          <el-table-column prop="id" label="编号" width="100" align="center"/>
 
           <el-table-column label="商品图片" width="120" align="center">
             <template v-slot="scope">
@@ -29,15 +30,15 @@
 
           <el-table-column label="商品名称" align="center">
             <template v-slot="scope">
-              <p>{{ scope.row.name }}</p>
-              <p>品牌：{{ scope.row.brandName }}</p>
+              <p>{{scope.row.name}}</p>
+              <p>品牌：{{scope.row.brandName}}</p>
             </template>
           </el-table-column>
 
           <el-table-column label="价格/货号" width="140" align="center">
             <template v-slot="scope">
-              <p>价格：{{ scope.row.price | moneyFormat }}</p>
-              <p>货号：{{ scope.row.productSn }}</p>
+              <p>价格：{{scope.row.price | moneyFormat}}</p>
+              <p>货号：{{scope.row.productSn}}</p>
             </template>
           </el-table-column>
 
@@ -76,12 +77,12 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="sort" label="排序" width="100" align="center" />
-          <el-table-column prop="sale" label="销量" width="100" align="center" />
+          <el-table-column prop="sort" label="排序" width="100" align="center"/>
+          <el-table-column prop="sale" label="销量" width="100" align="center"/>
 
           <el-table-column label="审核状态" width="100" align="center">
             <template v-slot="scope">
-              <p>{{ scope.row.verifyStatus | verifyStatusFilter }}</p>
+              <p>{{scope.row.verifyStatus | verifyStatusFilter}}</p>
               <p>
                 <el-button
                     type="text"
@@ -204,24 +205,36 @@ export default {
       batchOperateOptions: [
         {
           label: '商品上架',
+          key: 'publishStatus',
+          value: 1
         },
         {
           label: '商品下架',
+          key: 'publishStatus',
+          value: 0
         },
         {
           label: '设为推荐',
+          key: 'recommandStatus',
+          value: 1
         },
         {
           label: '取消推荐',
+          key: 'recommandStatus',
+          value: 0
         },
         {
           label: '设为新品',
+          key: 'newStatus',
+          value: 1
         },
         {
           label: '取消新品',
+          key: 'newStatus',
+          value: 0
         },
       ],
-      selectList: []
+      multipleSelection: []
     };
   },
 
@@ -263,7 +276,7 @@ export default {
     },
 
     // 获取商品子分类
-    getProductChildCate(ids, options){
+    getProductChildCate(ids, options) {
       let pList = []
       ids.forEach(element => {
         pList.push(productChildCateApi(element))
@@ -283,7 +296,7 @@ export default {
     },
 
     // 获取品牌
-    getBrandListApi(){
+    getBrandListApi() {
       brandListApi().then(response => {
         let temp = []
         response.data.forEach(element => {
@@ -297,7 +310,7 @@ export default {
     },
 
     // 审核详情
-    handleShowVerifyDetail(){
+    handleShowVerifyDetail() {
       this.$message({
         message: '审核详情',
         type: "warning"
@@ -305,12 +318,12 @@ export default {
     },
 
     // 添加
-    handleAdd(){
-      this.$router.push({ name: "addProduct" });
+    handleAdd() {
+      this.$router.push({name: "addProduct"});
     },
 
     // 编辑
-    handleUpdateProduct(row){
+    handleUpdateProduct(row) {
       this.$router.push({
         path: "/pms/updateProduct",
         query: {
@@ -320,60 +333,27 @@ export default {
     },
 
     // 删除
-    handleDelete(){
+    handleDelete() {
       this.$message({
         message: '删除',
         type: "warning"
       })
     },
 
-    // 批量操作
-    handleBatchOperate(value){
-      if (this.selectList.length) {
-        let temp = [];
-        this.selectList.forEach((element) => {
-          if (value === "商品上架") {
-            element.publishStatus = 1;
-            temp.push(element);
-          }else if (value === "商品下架") {
-            element.publishStatus = 0;
-            temp.push(element);
-          }else if (value === "设为推荐") {
-            element.recommandStatus = 1;
-            temp.push(element);
-          }else if (value === "取消推荐") {
-            element.recommandStatus = 0;
-            temp.push(element);
-          }else if (value === "设为新品") {
-            element.newStatus = 1;
-            temp.push(element);
-          }else if (value === "取消新品") {
-            element.newStatus = 0;
-            temp.push(element);
-          }
-        });
-      } else {
-        this.$message({
-          message: "请选择要操作的商品",
-          type: "warning",
-        });
-      }
-    },
-
     // 选择
-    handleSelectionChange(value){
-      this.selectList = value
+    handleSelectionChange(value) {
+      this.multipleSelection = value
     },
 
-    handlePublishStatusChange(){
+    handlePublishStatusChange() {
       console.log('handlePublishStatusChange')
     },
 
-    handleNewStatusChange(){
+    handleNewStatusChange() {
       console.log('handleNewStatusChange')
     },
 
-    handleRecommendStatusChange(){
+    handleRecommendStatusChange() {
       console.log('handleRecommendStatusChange')
     },
   },
@@ -386,23 +366,29 @@ export default {
     margin-top: 60px;
     margin-left: 20px;
   }
+
   .operate-container {
     margin-left: 20px;
     margin-top: 20px;
+
     .left {
       display: inline-block;
+
       .el-icon-tickets {
         margin-right: 5px;
       }
     }
+
     .btn-add {
       margin-left: 91%;
     }
   }
+
   .list {
     margin-left: 20px;
     margin-top: 20px;
   }
+
   .product-operate {
     margin-bottom: 40px;
   }

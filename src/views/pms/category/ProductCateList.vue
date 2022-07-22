@@ -1,39 +1,39 @@
 <template>
   <div class="product-cate-list">
     <datasheets
-      :all-data="allData"
-      :operate-data="operateData"
-      :total="allData.length"
+        :all-data="allData"
+        :operate-data="operateData"
+        :total="allData.length"
     >
       <template v-slot="prop">
         <el-table :data="prop.tableData" border>
-          <el-table-column prop="id" label="编号" width="100" align="center" />
-          <el-table-column prop="name" label="分类名称" align="center" />
+          <el-table-column prop="id" label="编号" width="100" align="center"/>
+          <el-table-column prop="name" label="分类名称" align="center"/>
           <el-table-column
-            prop="level"
-            label="级别"
-            width="100"
-            align="center"
+              prop="level"
+              label="级别"
+              width="100"
+              align="center"
           />
           <el-table-column
-            prop="productCount"
-            label="商品名称"
-            width="100"
-            align="center"
+              prop="productCount"
+              label="商品名称"
+              width="100"
+              align="center"
           />
           <el-table-column
-            prop="productUnit"
-            label="单位数量"
-            width="100"
-            align="center"
+              prop="productUnit"
+              label="单位数量"
+              width="100"
+              align="center"
           />
           <el-table-column label="导航栏" align="center" width="100">
             <template v-slot="scope">
               <el-switch
-                v-model="scope.row.navStatus"
-                @change="handleNavStatusChange(scope.row)"
-                :active-value="1"
-                :inactive-value="0"
+                  v-model="scope.row.navStatus"
+                  @change="handleNavStatusChange(scope.row)"
+                  :active-value="1"
+                  :inactive-value="0"
               >
               </el-switch>
             </template>
@@ -41,33 +41,36 @@
           <el-table-column label="是否显示" align="center" width="100">
             <template v-slot="scope">
               <el-switch
-                v-model="scope.row.showStatus"
-                @change="handleShowStatusChange(scope.row)"
-                :active-value="1"
-                :inactive-value="0"
+                  v-model="scope.row.showStatus"
+                  @change="handleShowStatusChange(scope.row)"
+                  :active-value="1"
+                  :inactive-value="0"
               >
               </el-switch>
             </template>
           </el-table-column>
           <el-table-column
-            prop="sort"
-            label="排序"
-            width="100"
-            align="center"
+              prop="sort"
+              label="排序"
+              width="100"
+              align="center"
           />
           <el-table-column label="操作" align="center">
             <template v-slot="scope">
               <el-button size="mini" @click="handleShowNextLevel(scope.row)"
-                >查看下级</el-button
+              >查看下级
+              </el-button
               >
               <el-button size="mini" @click="handleUpdate(scope.row)"
-                >编辑</el-button
+              >编辑
+              </el-button
               >
               <el-button
-                type="danger"
-                size="mini"
-                @click="handleDelete(scope.row)"
-                >删除</el-button
+                  type="danger"
+                  size="mini"
+                  @click="handleDelete(scope.row)"
+              >删除
+              </el-button
               >
             </template>
           </el-table-column>
@@ -78,7 +81,7 @@
 </template>
 
 <script>
-import { productFilterCateApi, productChildCateApi } from "@/api/product";
+import {productFilterCateApi, productChildCateApi} from "@/api/product";
 import Datasheets from "@/components/datasheets/Datasheets";
 
 export default {
@@ -128,10 +131,9 @@ export default {
   methods: {
     // 获取分类
     getCate() {
-      if (this.parentId == 0) {
+      if (this.parentId === 0) {
         productFilterCateApi().then((response) => {
           this.allData = response.data;
-          console.log(response.data);
         });
       } else {
         productChildCateApi(this.parentId).then((response) => {
@@ -152,7 +154,7 @@ export default {
 
     // 跳转到添加页面
     handleAdd() {
-      this.$router.push({ name: "addProductCate" });
+      this.$router.push({name: "addProductCate"});
     },
 
     // 导航栏
@@ -175,7 +177,7 @@ export default {
     handleShowNextLevel(row) {
       this.$router.push({
         path: "/pms/productCate",
-        query: { parentId: row.id },
+        query: {parentId: row.id},
       });
     },
 
@@ -183,7 +185,7 @@ export default {
     handleUpdate(row) {
       this.$router.push({
         path: "/pms/updateProductCate",
-        query: { id: row.id },
+        query: {id: row.id},
       });
     },
 

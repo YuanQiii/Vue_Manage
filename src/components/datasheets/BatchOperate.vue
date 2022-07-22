@@ -26,8 +26,12 @@ export default {
   props: {
     batchOperateOptions: {
       type: Array,
-      default: []
+      default: () => []
     },
+    multipleSelection: {
+      type: Array,
+      default: () => []
+    }
   },
   data(){
     return {
@@ -36,7 +40,48 @@ export default {
   },
   methods: {
     handleBatchOperate(){
-      this.$emit('handleBatchOperate', this.batchOperateType)
+      let isDelete = false
+      if (this.multipleSelection.length) {
+        this.multipleSelection.forEach(element => {
+          this.batchOperateOptions.forEach(item => {
+            if(item.label === this.batchOperateType){
+
+              // 批量发货
+              if(item.label === '批量发货'){
+                if(element[item.key] === 1){
+                  element[item.key] = item.value
+                }
+              }
+              else if(item.label.includes('删除') && !isDelete){
+                isDelete = true
+              }
+              else{
+                element[item.key] = item.value
+              }
+            }
+          })
+        })
+
+        if(isDelete){
+          this.$message({
+            message: "删除成功！",
+            type: "success",
+          });
+        }else{
+          this.$message({
+            message: "修改成功",
+            type: "success",
+          });
+        }
+
+        isDelete = false
+
+      }else{
+        this.$message({
+          message: "请选择一条记录",
+          type: "warning",
+        });
+      }
     }
   }
 }

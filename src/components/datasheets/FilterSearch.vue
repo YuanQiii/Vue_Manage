@@ -66,6 +66,15 @@
                 class="input"/>
           </el-form-item>
 
+<!--          日期选择器-->
+          <el-form-item :label="value.label" v-for="(value, index) in filterData.date" :key="index + value.label">
+            <el-date-picker
+                v-model="filterConditions[value.keyword]"
+                type="date"
+                :placeholder="value.placeholder"
+                class="input">
+            </el-date-picker>
+          </el-form-item>
         </el-form>
       </div>
     </el-card>
@@ -83,7 +92,7 @@ export default {
   },
   data(){
     return {
-      filterConditions: {}
+      filterConditions: {},
     }
   },
   methods: {

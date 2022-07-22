@@ -10,12 +10,12 @@
       :all-data="allData"
       :filter-data="filterData"
       :total="allData.length"
+      :operate-data="operateData"
       :batch-operate-options="batchOperateOptions"
-      @selection-change="handleSelectionChange"
-      @handleBatchOperate="handleBatchOperate"
+      :multipleSelection="multipleSelection"
     >
       <template v-slot="prop">
-        <el-table :data="prop.tableData" border>
+        <el-table :data="prop.tableData" border @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="60" align="center" />
           <el-table-column prop="id" label="编号" width="100" align="center" />
           <el-table-column prop="name" label="品牌名称" align="center" />
@@ -93,26 +93,24 @@ export default {
           },
         ],
       },
+      operateData: [
+        {
+          btnName: '添加',
+          callback: this.handleAdd
+        }
+      ],
       batchOperateOptions: [
         {
           label: "显示品牌",
+          key: 'showStatus',
+          value: 1
         },
         {
           label: "隐藏品牌",
+          key: 'showStatus',
+          value: 0
         },
       ],
-
-      operates: [
-        {
-          label: "显示品牌",
-          value: "showBrand",
-        },
-        {
-          label: "隐藏品牌",
-          value: "hideBrand",
-        },
-      ],
-
       multipleSelection: [],
     };
   },
@@ -125,12 +123,12 @@ export default {
       });
     },
 
-    // 品牌选择
+    // 选择
     handleSelectionChange(value) {
       this.multipleSelection = value;
     },
 
-    // 品牌制造商
+    // 制造商
     handleFactoryStatusChange(row) {
       this.$message({
         message: "品牌制造商",
@@ -141,66 +139,6 @@ export default {
     // 是否显示
     handleShowStatusChange(row) {
       console.log(this.brandList);
-    },
-
-    // 查询
-    searchBrandList() {
-      this.pageConfig.pageNum = 1;
-      if (this.pageConfig.keyword) {
-        let temp = [];
-        this.brandList.forEach((element) => {
-          if (
-            element.name.includes(this.pageConfig.keyword) ||
-            element.firstLetter == this.pageConfig.keyword.toUpperCase()
-          ) {
-            temp.push(element);
-          }
-        });
-        this.brandList = temp;
-      } else {
-        this.getBrandList();
-      }
-    },
-
-    // 批量操作
-    handleBatchOperate() {
-      if (this.multipleSelection < 1) {
-        this.$message({
-          message: "请选择一条记录",
-          type: "warning",
-        });
-        return;
-      }
-
-      let showStatus = 0;
-      if (this.operateType === "showBrand") {
-        showStatus = 1;
-      } else if (this.operateType === "hideBrand") {
-        showStatus = 0;
-      } else {
-        this.$message({
-          message: "请选择批量操作类型",
-          type: "warning",
-        });
-        return;
-      }
-
-      let temp = [];
-      this.brandList.forEach((element) => {
-        this.multipleSelection.forEach((item) => {
-          if (element.id == item.id) {
-            element.showStatus = showStatus;
-          }
-        });
-
-        temp.push(element);
-      });
-      this.brandList = temp;
-
-      this.$message({
-        message: "修改成功",
-        type: "success",
-      });
     },
 
     // 跳转到更新页面
@@ -215,14 +153,6 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        let temp = [];
-        this.brandList.forEach((element) => {
-          if (element.id != row.id) {
-            temp.push(element);
-          }
-        });
-        this.brandList = temp;
-
         this.$message({
           message: "删除成功",
           type: "success",
@@ -231,7 +161,7 @@ export default {
     },
 
     // 跳转到添加页面
-    addBrand() {
+    handleAdd() {
       this.$router.push({ path: "/pms/addBrand" });
     },
   },

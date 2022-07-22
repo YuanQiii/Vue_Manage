@@ -69,7 +69,7 @@ export default {
   name: "DeliverOrderList",
   data() {
     return {
-      deliverList: this.$route.params.deliverList,
+      deliverList: [this.$route.query],
       companyOptions: ["顺丰快递", "圆通快递", "中通快递", "韵达快递"],
     };
   },

@@ -1,36 +1,35 @@
 <template>
   <div class="datasheets">
     <filter-search
-      :filter-data="filterData"
-      @handleReset="handleReset"
-      @handleSearch="handleSearch"
+        :filter-data="filterData"
+        @handleReset="handleReset"
+        @handleSearch="handleSearch"
     >
     </filter-search>
 
-    <data-operate :operate-data="operateData" class="data-operate" />
+    <data-operate :operate-data="operateData" class="data-operate"/>
 
-    <slot :tableData="tableData" />
+    <slot :tableData="tableData"/>
 
     <div
-      class="bottom"
-      :style="
+        class="bottom"
+        :style="
         batchOperateOptions.length
           ? 'justify-content: space-between'
           : 'justify-content: end'
-      "
-    >
+      ">
       <batch-operate
-        class="batch-operate"
-        :batch-operate-options="batchOperateOptions"
-        @handleBatchOperate="handleBatchOperate"
-        v-if="batchOperateOptions.length !== 0"
+          class="batch-operate"
+          :batch-operate-options="batchOperateOptions"
+          :multipleSelection="multipleSelection"
+          v-if="batchOperateOptions.length !== 0"
       />
       <pagination
-        :layout="layout"
-        :total="total"
-        :page-config="pageConfig"
-        @handleSizeChange="handleSizeChange"
-        @handleCurrentChange="handleCurrentChange"
+          :layout="layout"
+          :total="total"
+          :page-config="pageConfig"
+          @handleSizeChange="handleSizeChange"
+          @handleCurrentChange="handleCurrentChange"
       />
     </div>
   </div>
@@ -42,9 +41,11 @@ import DataOperate from "@/components/datasheets/DataOperate";
 import BatchOperate from "@/components/datasheets/BatchOperate";
 import Pagination from "@/components/datasheets/Pagination";
 
+import {formatDate} from '@/utils/date'
+
 export default {
   name: "Datasheets",
-  components: { BatchOperate, DataOperate, FilterSearch, Pagination },
+  components: {BatchOperate, DataOperate, FilterSearch, Pagination},
   props: {
     allData: {
       type: Array,
@@ -63,6 +64,10 @@ export default {
     batchOperateOptions: {
       type: Array,
       default: () => [],
+    },
+    multipleSelection: {
+      type: Array,
+      default: () => []
     },
 
     total: {
@@ -92,9 +97,9 @@ export default {
   watch: {
     allData(newValue) {
       this.tableData = this.handleData(
-        newValue,
-        this.pageConfig,
-        this.filterConditions
+          newValue,
+          this.pageConfig,
+          this.filterConditions
       );
     },
   },
@@ -109,11 +114,6 @@ export default {
       this.filterConditions = value;
       this.tableData = this.handleData();
       console.log(this.tableData);
-    },
-
-    // 批量操作
-    handleBatchOperate(value) {
-      this.$emit("handleBatchOperate", value);
     },
 
     // 改变展示数量
@@ -155,7 +155,14 @@ export default {
                 } else {
                   flags.push(false);
                 }
-              } else {
+              }else if(value instanceof Date){
+                if(element[key].includes(formatDate(value, 'yyyy-MM-dd'))){
+                  flags.push(true);
+                }else{
+                  flags.push(false);
+                }
+              }
+              else {
                 if (element[key] != null && element[key].includes(value)) {
                   flags.push(true);
                 } else {
@@ -187,14 +194,17 @@ export default {
 <style lang="less" scoped>
 .datasheets {
   margin-right: 40px;
+
   .data-operate {
     margin-top: 20px;
     margin-bottom: 20px;
   }
+
   .bottom {
     display: flex;
     margin-top: 20px;
     margin-bottom: 40px;
+
     .batch-operate {
       margin-right: 40px;
     }

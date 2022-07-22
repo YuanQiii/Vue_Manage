@@ -29,13 +29,13 @@
         align="center"
       ></el-table-column>
       <el-table-column label="商品名称" align="center">
-        <template slot-scope="scope">{{ scope.row.name }}</template>
+        <template v-slot="scope">{{ scope.row.name }}</template>
       </el-table-column>
       <el-table-column label="货号" width="160" align="center">
-        <template slot-scope="scope">NO.{{ scope.row.productSn }}</template>
+        <template v-slot="scope">NO.{{ scope.row.productSn }}</template>
       </el-table-column>
       <el-table-column label="价格" width="120" align="center">
-        <template slot-scope="scope">￥{{ scope.row.price }}</template>
+        <template v-slot="scope">￥{{ scope.row.price }}</template>
       </el-table-column>
     </el-table>
 

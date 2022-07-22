@@ -1,101 +1,52 @@
 <template>
   <div class="admin-list">
-    <filter-search @handleSearch="handleSearch" @handleReset="handleReset">
-      <el-form
-        :inline="true"
-        :model="filterConditions"
-        size="small"
-        label-width="140px"
-      >
-        <el-form-item label="输入姓名：">
-          <el-input
-            v-model="filterConditions.nickName"
-            class="input-width"
-            placeholder="姓名"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-    </filter-search>
 
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button size="mini" class="btn-add" @click="handleAdd">添加</el-button>
-    </el-card>
-
-    <div class="table-container">
-      <el-table
-        ref="adminTable"
-        :data="dataTableList"
-        style="width: 100%"
-        v-loading="listLoading"
-        border
-      >
-        <el-table-column
-          type="selection"
-          width="60"
-          align="center"
-        ></el-table-column>
-        <el-table-column label="编号" align="center">
-          <template slot-scope="scope">{{ scope.row.id }}</template>
-        </el-table-column>
-        <el-table-column label="账号" align="center">
-          <template slot-scope="scope">{{ scope.row.username }}</template>
-        </el-table-column>
-        <el-table-column label="姓名" align="center">
-          <template slot-scope="scope">{{ scope.row.nickName }}</template>
-        </el-table-column>
-        <el-table-column label="邮箱" align="center">
-          <template slot-scope="scope">{{ scope.row.email }}</template>
-        </el-table-column>
-        <el-table-column label="添加时间" align="center">
-          <template slot-scope="scope">{{
-            formatDate(scope.row.createTime)
-          }}</template>
-        </el-table-column>
-
-        <el-table-column label="是否启用" align="center">
-          <template slot-scope="scope">
-            <el-switch
-              @change="handleStatusChange(scope.$index, scope.row)"
-              v-model="scope.row.status"
-              :active-value="1"
-              :inactive-value="0"
-            >
-            </el-switch
-          ></template>
-        </el-table-column>
-
-        <el-table-column label="操作" width="180" align="center">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="text"
-              @click="handleAssign(scope.$index, scope.row)"
+    <datasheets :all-data="allData" :total="allData.length" :filter-data="filterData" :operate-data="operateData">
+      <template v-slot="prop">
+        <el-table
+            :data="prop.tableData"
+            style="width: 100%"
+            border>
+          <el-table-column prop="id" label="编号" width="70" align="center" />
+          <el-table-column prop="username" label="账号" width="150" align="center" />
+          <el-table-column prop="nickName" label="姓名" width="120" align="center" />
+          <el-table-column prop="email" label="邮箱" width="200" align="center" />
+          <el-table-column prop="createTime" label="添加时间" align="center" />
+          <el-table-column label="是否启用" width="100" align="center">
+            <template v-slot="scope">
+              <el-switch
+                  @change="handleStatusChange(scope.row)"
+                  v-model="scope.row.status"
+                  :active-value="1"
+                  :inactive-value="0"
+              >
+              </el-switch
+              ></template>
+          </el-table-column>
+          <el-table-column label="操作" align="center">
+            <template v-slot="scope">
+              <el-button
+                  size="mini"
+                  @click="handleAssign(scope.row)"
               >分配角色</el-button
-            >
-            <el-button
-              size="mini"
-              type="text"
-              @click="handleUpdate(scope.$index, scope.row)"
-            >
-              编辑</el-button
-            >
-            <el-button
-              size="mini"
-              type="text"
-              @click="handleDelete(scope.$index, scope.row)"
+              >
+              <el-button
+                  size="mini"
+                  @click="handleUpdate(scope.row)"
+              >
+                编辑</el-button
+              >
+              <el-button
+                  size="mini"
+                  type="danger"
+                  @click="handleDelete(scope.row)"
               >删除</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-
-    <div class="pagination">
-      <pagination :pageConfig="pageConfig" :total="dataTableList.length" />
-    </div>
-
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+    </datasheets>
     <div class="dialog">
       <el-dialog
         title="分配角色"
@@ -132,7 +83,7 @@
       </el-dialog>
 
       <el-dialog
-        :title="isEdit ? '编辑用户' : '添加用户'"
+        :title="isUpdate ? '编辑用户' : '添加用户'"
         :visible.sync="dialogVisible"
         width="40%"
       >
@@ -201,9 +152,7 @@
 </template>
 
 <script>
-import FilterSearch from "@/components/filterSearch/FilterSearch.vue";
 import {
-  dataTableList,
   deleteItemById,
   updateItem,
   addItem,
@@ -214,26 +163,35 @@ import {
   roleListApi,
   adminDetailApi,
 } from "@/api/permissions.js";
-import Pagination from "@/components/pagination/Pagination.vue";
+import Datasheets from "@/components/datasheets/Datasheets";
 
 export default {
   name: "AdminList",
-  components: { FilterSearch, Pagination },
+  components: {Datasheets},
   created() {
     this.getAdminList();
     this.getRoleList();
   },
   data() {
     return {
-      filterConditions: {},
-      pageConfig: {
-        pageSize: 10,
-        pageNum: 1,
+      allData: [],
+      filterData: {
+        input: [
+          {
+            label: '输入姓名',
+            placeholder: '请输入输入姓名',
+            keyword: 'nickName'
+          }
+        ]
       },
-      dataTableList: [],
-      listLoading: false,
-      assginDialogVisible: false,
+      operateData: [
+        {
+          btnName: '添加',
+          callback: this.handleAdd
+        }
+      ],
 
+      assginDialogVisible: false,
       adminRules: {
         adminForm: [
           {
@@ -243,11 +201,9 @@ export default {
           },
         ],
       },
-
       roleList: [],
       assginRoleIds: [],
-
-      isEdit: false,
+      isUpdate: false,
       dialogVisible: false,
       adminDetail: {},
     };
@@ -256,12 +212,7 @@ export default {
     // 获取管理员列表
     getAdminList() {
       adminListApi().then((response) => {
-        console.log(response);
-        this.dataTableList = dataTableList(
-          response.data.list,
-          this.pageConfig,
-          this.filterConditions
-        );
+        this.allData = response.data.list
       });
     },
 
@@ -272,60 +223,36 @@ export default {
       });
     },
 
-    // 查询搜索
-    handleSearch() {
-      this.dataTableList = dataTableList(
-        this.dataTableList,
-        this.pageConfig,
-        this.filterConditions
-      );
-    },
-
-    // 重置
-    handleReset() {
-      this.filterConditions = {};
-    },
-
     // 添加按钮
     handleAdd() {
       this.adminDetail = { status: 1 };
       this.dialogVisible = true;
-      this.isEdit = false;
+      this.isUpdate = false;
     },
 
     // 是否启用
-    handleStatusChange(index, row) {
-      this.$confirm("是否要修改该状态?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          console.log(row.status);
-        })
-        .catch(() => {
-          row.status = !row.status * 1;
-        });
+    handleStatusChange(row) {
+      console.log(row)
     },
 
     // 分配角色
-    handleAssign(index, row) {
+    handleAssign(row) {
       this.assginDialogVisible = true;
       this.assginRoleIds = [row.id];
     },
 
     // 编辑按钮
-    handleUpdate(index, row) {
+    handleUpdate(row) {
       adminDetailApi(row.id).then((response) => {
         this.dialogVisible = true;
-        this.isEdit = false;
+        this.isUpdate = true;
         this.adminDetail = response.data;
       });
     },
 
     // 删除
     handleDelete(index, row) {
-      this.dataTableList = deleteItemById(this.dataTableList, row.id);
+      this.allData = deleteItemById(this.allData, row.id);
       this.$message({
         message: "删除成功",
         type: "success",
@@ -340,8 +267,8 @@ export default {
         type: "warning",
       }).then(() => {
         // 编辑
-        if (this.isEdit) {
-          this.dataTableList = updateItem(this.dataTableList, this.adminDetail);
+        if (this.isUpdate) {
+          this.allData = updateItem(this.allData, this.adminDetail);
           this.dialogVisible = false;
           this.$message({
             message: "更新成功",
@@ -352,9 +279,9 @@ export default {
         // 添加
         else {
           this.dialogVisible = false;
-          this.adminDetail.id = this.dataTableList.length + 1;
+          this.adminDetail.id = this.allData.length + 1;
           this.adminDetail.createTime = "2018-10-08T05:32:47.000+00:00";
-          this.dataTableList = addItem(this.dataTableList, this.adminDetail);
+          this.allData = addItem(this.allData, this.adminDetail);
         }
       });
     },
@@ -373,25 +300,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.admin-list {
-  margin-top: 40px;
-  .operate-container {
-    margin-top: 20px;
-    .btn-add {
-      float: right;
-    }
-  }
-  .el-icon-tickets {
-    margin-right: 5px;
-  }
-  .table-container {
-    margin-top: 20px;
-  }
-
-  .pagination {
-    float: right;
-    margin-top: 20px;
-    margin-bottom: 40px;
-  }
-}
 </style>

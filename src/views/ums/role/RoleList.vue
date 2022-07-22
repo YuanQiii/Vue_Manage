@@ -9,17 +9,17 @@
       <template v-slot="prop">
         <el-table :data="prop.tableData" border>
           <el-table-column prop="id" label="编号" width="100" align="center" />
-          <el-table-column prop="name" label="角色名称" align="center" />
+          <el-table-column prop="name" label="角色名称" width="120" align="center" />
           <el-table-column prop="description" label="描述" align="center" />
-          <el-table-column prop="adminCount" label="用户数" align="center" />
-          <el-table-column label="添加时间" align="center">
+          <el-table-column prop="adminCount" label="用户数" width="100" align="center" />
+          <el-table-column label="添加时间" width="160" align="center">
             <template v-slot="scope">
               <p>
                 {{ scope.row.createTime | formatDate }}
               </p>
             </template>
           </el-table-column>
-          <el-table-column label="是否启用" align="center">
+          <el-table-column label="是否启用" width="100" align="center">
             <template v-slot="scope">
               <el-switch
                 v-model="scope.row.status"
@@ -30,25 +30,23 @@
               </el-switch>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="150">
+          <el-table-column label="操作" align="center" >
             <template v-slot="scope">
               <el-button
-                type="text"
                 size="mini"
                 @click="handleAllocMenu(scope.row)"
                 >分配菜单</el-button
               >
               <el-button
-                type="text"
                 size="mini"
                 @click="handleAllocResource(scope.row)"
                 >分配资源</el-button
               >
-              <el-button type="text" size="mini" @click="handleEdit(scope.row)"
+              <el-button size="mini" @click="handleEdit(scope.row)"
                 >编辑</el-button
               >
               <el-button
-                type="text"
+                type="danger"
                 size="mini"
                 @click="handleDelete(scope.row)"
                 >删除</el-button

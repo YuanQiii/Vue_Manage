@@ -1,168 +1,192 @@
 <template>
-   
   <div class="order-orderList">
-    <order-search @searchResult="searchResult" />
-
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-    </el-card>
-    <div class="table-container">
-      <el-table
-        ref="orderTable"
-        :data="currentList"
-        style="width: 100%"
-        @selection-change="handleSelectionChange"
-        v-loading="listLoading"
-        border
-      >
-        <el-table-column
-          type="selection"
-          width="60"
-          align="center"
-        ></el-table-column>
-        <el-table-column label="编号" width="80" align="center">
-          <template slot-scope="scope">{{ scope.row.id }}</template>
-        </el-table-column>
-        <el-table-column label="订单编号" width="180" align="center">
-          <template slot-scope="scope">{{ scope.row.orderSn }}</template>
-        </el-table-column>
-        <el-table-column label="提交时间" width="180" align="center">
-          <template slot-scope="scope">{{
-            scope.row.createTime | formatCreateTime
-          }}</template>
-        </el-table-column>
-        <el-table-column label="用户账号" align="center">
-          <template slot-scope="scope">{{ scope.row.memberUsername }}</template>
-        </el-table-column>
-        <el-table-column label="订单金额" width="120" align="center">
-          <template slot-scope="scope">￥{{ scope.row.totalAmount }}</template>
-        </el-table-column>
-        <el-table-column label="支付方式" width="120" align="center">
-          <template slot-scope="scope">{{
-            scope.row.payType | formatPayType
-          }}</template>
-        </el-table-column>
-        <el-table-column label="订单来源" width="120" align="center">
-          <template slot-scope="scope">{{
-            scope.row.sourceType | formatSourceType
-          }}</template>
-        </el-table-column>
-        <el-table-column label="订单状态" width="120" align="center">
-          <template slot-scope="scope">{{
-            scope.row.status | formatStatus
-          }}</template>
-        </el-table-column>
-        <el-table-column label="操作" width="200" align="center">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="handleViewOrder(scope.$index, scope.row)"
-              >查看订单</el-button
-            >
-            <el-button
-              size="mini"
-              @click="handleCloseOrder(scope.$index, scope.row)"
-              v-show="scope.row.status === 0"
-              >关闭订单</el-button
-            >
-            <el-button
-              size="mini"
-              @click="handleDeliveryOrder(scope.$index, scope.row)"
-              v-show="scope.row.status === 1"
-              >订单发货</el-button
-            >
-            <el-button
-              size="mini"
-              @click="handleViewLogistics(scope.$index, scope.row)"
-              v-show="scope.row.status === 2 || scope.row.status === 3"
-              >订单跟踪</el-button
-            >
-            <el-button
-              size="mini"
-              type="danger"
-              @click="handleDeleteOrder(scope.$index, scope.row)"
-              v-show="scope.row.status === 4"
-              >删除订单</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-
-    <div class="bottom">
-      <div class="batch-operate-container">
-        <el-select size="small" v-model="operateType" placeholder="批量操作">
-          <el-option
-            v-for="item in operateOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
-          </el-option>
-        </el-select>
-        <el-button
-          style="margin-left: 20px"
-          class="search-button"
-          @click="handleBatchOperate()"
-          type="primary"
-          size="small"
+    <datasheets :all-data="allData" :total="allData.length" :filter-data="filterData" :batch-operate-options="batchOperateOptions" :multiple-selection="multipleSelection">
+      <template v-slot="prop">
+        <el-table
+            :data="prop.tableData"
+            style="width: 100%"
+            @selection-change="handleSelectionChange"
+            border
         >
-          确定
-        </el-button>
-      </div>
-
-      <div class="pagination-container">
-        <el-pagination
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes,prev, pager, next,jumper"
-          :current-page.sync="pageConfig.pageNum"
-          :page-size="pageConfig.pageSize"
-          :page-sizes="[5, 10, 15]"
-          :total="orderList.length"
-        >
-        </el-pagination>
-      </div>
-    </div>
+          <el-table-column
+              type="selection"
+              width="60"
+              align="center"
+          ></el-table-column>
+          <el-table-column prop="id" label="编号" width="100" align="center"/>
+          <el-table-column prop="orderSn" label="编号" width="180" align="center"/>
+          <el-table-column label="提交时间" width="180" align="center">
+            <template v-slot="scope">
+              {{scope.row.createTime | formatCreateTime}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="memberUsername" label="用户账户" align="center"/>
+          <el-table-column label="订单金额" width="120" align="center">
+            <template v-slot="scope">
+            {{`￥${scope.row.totalAmount}`}}
+          </template></el-table-column>
+          <el-table-column label="支付方式" width="120" align="center">
+            <template v-slot="scope">
+              {{scope.row.payType | formatPayType}}
+            </template>
+          </el-table-column>
+          <el-table-column label="订单来源" width="120" align="center">
+            <template v-slot="scope">
+              {{scope.row.sourceType | formatSourceType}}
+            </template>
+          </el-table-column>
+          <el-table-column label="订单状态" align="center">
+            <template v-slot="scope">
+              {{scope.row.status | formatStatus}}
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="200" align="center">
+            <template v-slot="scope">
+              <el-button
+                  size="mini"
+                  @click="handleViewOrder(scope.row)"
+              >查看订单
+              </el-button>
+              <el-button
+                  size="mini"
+                  @click="handleCloseOrder(scope.row)"
+                  v-show="scope.row.status === 0"
+              >关闭订单
+              </el-button>
+              <el-button
+                  size="mini"
+                  @click="handleDeliveryOrder(scope.row)"
+                  v-show="scope.row.status === 1"
+              >订单发货
+              </el-button>
+              <el-button
+                  size="mini"
+                  @click="handleTrackOrder(scope.row)"
+                  v-show="scope.row.status === 2 || scope.row.status === 3"
+              >订单跟踪
+              </el-button>
+              <el-button
+                  size="mini"
+                  type="danger"
+                  @click="handleDeleteOrder(scope.row)"
+                  v-show="scope.row.status === 4"
+              >删除订单
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+    </datasheets>
 
     <logistics-dialog v-model="logisticsDialogVisible"></logistics-dialog>
   </div>
 </template>
 <script>
-import { formatDate } from "@/utils/date";
-import LogisticsDialog from "@/views/oms/list/components/LogisticsDialog";
+import {formatDate} from "@/utils/date";
+import {orderListApi} from "@/api/order";
 
-import { orderListApi } from "@/api/order";
-import OrderSearch from "./components/OrderSearch.vue";
+import LogisticsDialog from "@/views/oms/list/components/LogisticsDialog";
+import Datasheets from "@/components/datasheets/Datasheets";
 
 export default {
   name: "OrderList",
-  components: { LogisticsDialog, OrderSearch },
+  components: {Datasheets, LogisticsDialog},
   data() {
     return {
-      pageConfig: {
-        pageNum: 1,
-        pageSize: 10,
+      allData: [],
+      filterData: {
+        input: [
+          {
+            label: '订单编号',
+            placeholder: '请输入订单编号',
+            keyword: 'orderSn'
+          },
+          {
+            label: '收货人',
+            placeholder: '请输入收货人',
+            keyword: 'memberUsername'
+          },
+        ],
+        select: [
+          {
+            label: '订单状态',
+            placeholder: '全部',
+            keyword: 'status',
+            options: [
+              {
+                label: "待付款",
+                value: 0,
+              },
+              {
+                label: "待发货",
+                value: 1,
+              },
+              {
+                label: "已发货",
+                value: 2,
+              },
+              {
+                label: "已完成",
+                value: 3,
+              },
+              {
+                label: "已关闭",
+                value: 4,
+              },
+            ]
+          },
+          {
+            label: '订单分类',
+            placeholder: '全部',
+            keyword: 'orderType',
+            options: [
+              {
+                label: "正常订单",
+                value: 0,
+              },
+              {
+                label: "秒杀订单",
+                value: 1,
+              },
+            ]
+          },
+          {
+            label: '订单来源',
+            placeholder: '全部',
+            keyword: 'payType',
+            options: [
+              {
+                label: "PC订单",
+                value: 0,
+              },
+              {
+                label: "APP订单",
+                value: 1,
+              },
+            ]
+          },
+        ],
+        date: [
+          {
+            label: '提交时间',
+            placeholder: '请选择时间',
+            keyword: 'createTime'
+          }
+        ]
       },
-      listLoading: true,
-      orderList: [],
-      operateType: null,
-      multipleSelection: [],
-      filterConditions: {},
-
-      // 订单操作选项
-      operateOptions: [
+      batchOperateOptions: [
         {
-          label: "批量发货",
-          value: 1,
+          label: '批量发货',
+          key: 'status',
+          value: 2
         },
         {
-          label: "删除订单",
-          value: 2,
+          label: '删除订单',
+          key: 'delete',
+          value: 1
         },
       ],
+      multipleSelection: [],
 
       // 订单跟踪弹窗
       logisticsDialogVisible: false,
@@ -211,39 +235,13 @@ export default {
       }
     },
   },
-  computed: {
-    currentList() {
-      let temp = [];
-      let start = (this.pageConfig.pageNum - 1) * this.pageConfig.pageSize;
-      let end = this.pageConfig.pageNum * this.pageConfig.pageSize;
-      let max = this.orderList.length;
-      end = end > max ? max : end;
 
-      this.orderList.slice(start, end).forEach((element) => {
-        let flags = [];
-        Object.keys(this.filterConditions).forEach((key) => {
-          let value = this.filterConditions[key];
-          if (value) {
-            if (value == element[key]) {
-              flags.push(true);
-            } else {
-              flags.push(false);
-            }
-          } else {
-            flags.push(true);
-          }
-        });
-        if (flags.every((value) => value)) {
-          temp.push(element);
-        }
-      });
-      return temp;
-    },
-  },
   methods: {
-    // 筛选
-    searchResult(value) {
-      this.filterConditions = value;
+    // 获取订单列表
+    getOrderList() {
+      orderListApi().then((response) => {
+        this.allData = response.data;
+      });
     },
 
     // 多选
@@ -252,162 +250,52 @@ export default {
     },
 
     // 跳转到订单详情
-    handleViewOrder(index, row) {
-      this.$router.push({ path: "/oms/orderDetail", query: { id: row.id } });
+    handleViewOrder(row) {
+      this.$router.push({path: "/oms/orderDetail", query: {id: row.id}});
+    },
+
+    // 关闭订单
+    handleCloseOrder(row){
+      console.log(row)
     },
 
     // 跳转到订单发货页面
-    handleDeliveryOrder(index, row) {
-      let listItem = this.covertOrder(row);
+    handleDeliveryOrder(row) {
+      let deliverList = this.covertOrder(row);
       this.$router.push({
-        name: "deliverOrderList",
-        params: { deliverList: [listItem] },
-      });
+        path: 'deliverOrderList',
+        query: deliverList
+      })
     },
 
     // 展示订单跟踪弹窗
-    handleViewLogistics(index, row) {
+    handleTrackOrder(row) {
       this.logisticsDialogVisible = true;
     },
 
     // 删除订单按钮
-    handleDeleteOrder(index, row) {
+    handleDeleteOrder(row) {
       this.$confirm("是否要进行该删除操作?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        this.deleteOrder([row]);
-      });
-    },
-
-    // 批量操作
-    handleBatchOperate() {
-      if (this.multipleSelection == null || this.multipleSelection.length < 1) {
         this.$message({
-          message: "请选择要操作的订单",
-          type: "warning",
+          message: "删除成功！",
+          type: "success",
         });
-        return;
-      }
-
-      if (this.operateType === 1) {
-        this.batchDeliverOrder();
-      }
-      if (this.operateType === 2) {
-        this.batchDeleteOrder();
-      }
-    },
-
-    // 批量发货
-    batchDeliverOrder() {
-      let selectOrderList = [];
-      this.multipleSelection.forEach((element) => {
-        if (element.status == 1) {
-          selectOrderList.push(element);
-        }
-      });
-
-      if (!selectOrderList.length) {
-        this.$message({
-          message: "选中订单中没有可以发货的订单",
-          type: "warning",
-        });
-        return;
-      }
-
-      this.$router.push({
-        name: "deliverOrderList",
-        params: { deliverList: selectOrderList },
-      });
-    },
-
-    // 批量删除
-    batchDeleteOrder() {
-      let selectOrderList = [];
-      this.multipleSelection.forEach((element) => {
-        if (element.status == 4) {
-          selectOrderList.push(element);
-        }
-      });
-
-      if (!selectOrderList.length) {
-        this.$message({
-          message: "选中订单中没有可以删除的订单",
-          type: "warning",
-        });
-        return;
-      }
-
-      this.$confirm("是否要进行该删除操作?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      }).then(() => {
-        this.deleteOrder(selectOrderList);
-      });
-    },
-
-    // 页面展示数量
-    handleSizeChange(val) {
-      this.pageConfig.pageNum = 1;
-      this.pageConfig.pageSize = val;
-      this.getOrderList();
-    },
-
-    // 改变页码
-    handleCurrentChange(val) {
-      this.pageConfig.pageNum = val;
-      this.getOrderList();
-    },
-
-    //   获取订单列表
-    getOrderList() {
-      this.listLoading = true;
-      orderListApi().then((response) => {
-        this.orderList = response.data;
-        this.listLoading = false;
-      });
-    },
-
-    //   删除订单
-    deleteOrder(orders) {
-      let temp = [];
-      this.orderList.forEach((element) => {
-        let flags = [];
-        orders.forEach((item) => {
-          if (element.id == item.id) {
-            flags.push(false);
-          } else {
-            flags.push(true);
-          }
-        });
-        if (flags.every((value) => value)) {
-          temp.push(element);
-        }
-      });
-      this.orderList = temp;
-
-      this.$message({
-        message: "删除成功！",
-        type: "success",
       });
     },
 
     // 转换订单地址格式
     covertOrder(order) {
-      let address =
-        order.receiverProvince +
-        order.receiverCity +
-        order.receiverRegion +
-        order.receiverDetailAddress;
       return {
         orderId: order.id,
         orderSn: order.orderSn,
         receiverName: order.receiverName,
         receiverPhone: order.receiverPhone,
         receiverPostCode: order.receiverPostCode,
-        address: address,
+        address: `${order.receiverProvince}${order.receiverCity}${order.receiverRegion}${order.receiverDetailAddress}`,
         deliveryCompany: null,
         deliverySn: null,
       };
@@ -418,10 +306,12 @@ export default {
 <style lang="less" scoped>
 .order-orderList {
   margin: 40px;
+
   .operate-container {
     margin-top: 20px;
     margin-bottom: 20px;
   }
+
   .bottom {
     display: flex;
     justify-content: space-between;
