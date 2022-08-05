@@ -4,7 +4,7 @@
  * @Date: 2022-04-01 16:41:12
  * @FilePath: \vue_manage\src\main.js
  */
-import Vue from "vue";
+// import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
@@ -14,22 +14,22 @@ import 'normalize.css/normalize.css'
 import '@/icons/index'
 import '@/utils/permission'
 
-import VCharts from 'v-charts'
+// import VCharts from 'v-charts'
 
-import ElementUI from "element-ui";
-import "element-ui/lib/theme-chalk/index.css";
+// import ElementUI from "element-ui";
+// import "element-ui/lib/theme-chalk/index.css";
 
-Vue.use(ElementUI);
-Vue.use(VCharts);
+Vue.use(ELEMENT);
+Vue.use(VeIndex);
 
 Vue.config.productionTip = false;
 
-Vue.filter("moneyFormat", (value) => {
-  return "¥" + Number(value).toFixed(2);
-});
-Vue.filter('formatDate', value => {
-  return value.replace('T', ' ').slice(0, -10)
-})
+// Vue.filter("moneyFormat", (value) => {
+//   return "¥" + Number(value).toFixed(2);
+// });
+// Vue.filter('formatDate', value => {
+//   return value.replace('T', ' ').slice(0, -10)
+// })
 
 
 new Vue({

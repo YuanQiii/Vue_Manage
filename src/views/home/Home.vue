@@ -255,6 +255,7 @@
 </template>
 
 <script>
+
 import { str2Date } from "@/utils/date";
 
 import { orderStatisticsApi, overviewApi, affairsApi } from "@/api/home";
