@@ -39,6 +39,7 @@ export default {
       let filter = [];
       routers.forEach((element) => {
         if (element.hasOwnProperty("children")) {
+          console.log(element);
           filter.push(element);
         }
       });

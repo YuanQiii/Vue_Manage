@@ -17,7 +17,7 @@
           <el-table-column prop="orderSn" label="编号" width="180" align="center"/>
           <el-table-column label="提交时间" width="180" align="center">
             <template v-slot="scope">
-              {{scope.row.createTime | formatCreateTime}}
+              {{scope.row.createTime | formatDate}}
             </template>
           </el-table-column>
           <el-table-column prop="memberUsername" label="用户账户" align="center"/>
@@ -196,11 +196,6 @@ export default {
     this.getOrderList();
   },
   filters: {
-    formatCreateTime(time) {
-      let date = new Date(time);
-      return formatDate(date, "yyyy-MM-dd hh:mm:ss");
-    },
-
     formatPayType(value) {
       if (value === 1) {
         return "支付宝";

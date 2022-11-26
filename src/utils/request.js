@@ -11,7 +11,7 @@ import { getToken } from "@/utils/auth";
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: "http://101.43.190.246:40001/mock/20/", // api的base_url
+  baseURL: "https://yapi.pro/mock/5225/", // api的base_url
   timeout: 15000, // 请求超时时间
 });
 

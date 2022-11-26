@@ -10,9 +10,15 @@
           <el-table-column prop="id" label="编号" width="70" align="center" />
           <el-table-column prop="username" label="账号" width="150" align="center" />
           <el-table-column prop="nickName" label="姓名" width="120" align="center" />
-          <el-table-column prop="email" label="邮箱" width="200" align="center" />
-          <el-table-column prop="createTime" label="添加时间" align="center" />
-          <el-table-column label="是否启用" width="100" align="center">
+          <el-table-column prop="email" label="邮箱" align="center" />
+
+          <el-table-column label="添加时间" align="center" width="150">
+            <template v-slot="scope">
+              {{scope.row.createTime | formatDate}}
+            </template>
+          </el-table-column>
+
+          <el-table-column label="是否启用" width="100" align="center" v-if="checkPermission('超级管理员')">
             <template v-slot="scope">
               <el-switch
                   @change="handleStatusChange(scope.row)"
@@ -23,7 +29,8 @@
               </el-switch
               ></template>
           </el-table-column>
-          <el-table-column label="操作" align="center">
+
+          <el-table-column label="操作" align="center" v-if="checkPermission('超级管理员')">
             <template v-slot="scope">
               <el-button
                   size="mini"
@@ -164,6 +171,7 @@ import {
   adminDetailApi,
 } from "@/api/permissions.js";
 import Datasheets from "@/components/datasheets/Datasheets";
+import {checkPermission} from '@/utils/checkPermission'
 
 export default {
   name: "AdminList",
@@ -295,6 +303,11 @@ export default {
     formatDate(date) {
       return date.replace("T", " ").slice(0, -10);
     },
+
+    // 校验权限
+    checkPermission(value){
+      return checkPermission(value)
+    }
   },
 };
 </script>

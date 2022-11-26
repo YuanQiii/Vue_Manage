@@ -35,7 +35,7 @@
           </el-table-column>
           <el-table-column label="添加时间" width="180" align="center">
             <template v-slot="scope">{{
-                scope.row.createTime | formatCreateTime
+                scope.row.createTime | formatDate
               }}</template>
           </el-table-column>
           <el-table-column label="操作" width="160" align="center">
@@ -119,13 +119,6 @@ export default {
       return this.returnReasonList.slice(start, end);
     },
   },
-  filters: {
-    formatCreateTime(time) {
-      let date = new Date(time);
-      return formatDate(date, "yyyy-MM-dd hh:mm:ss");
-    },
-  },
-
 
 
   methods: {

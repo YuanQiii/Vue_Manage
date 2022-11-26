@@ -11,7 +11,7 @@ import { getToken } from "@/utils/auth";
 
 const state = {
   token: getToken(),
-  name: "",
+  name: "admin",
   avatar: "",
   roles: [],
 };

@@ -8,7 +8,7 @@ import request from "@/utils/request";
 
 export function adminLoginApi(username, password) {
   return request({
-    url: "/adminLogin",
+    url: `/adminLogin?username=${username}`,
     method: "post",
     data: {
       username,

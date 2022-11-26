@@ -170,13 +170,13 @@ export default {
       });
       return temp;
     },
-    formatDate(time) {
-      if (time == null || time === "") {
-        return "N/A";
-      }
-      let date = new Date(time);
-      return formatDate(date, "yyyy-MM-dd");
-    },
+    // formatDate(time) {
+    //   if (time == null || time === "") {
+    //     return "N/A";
+    //   }
+    //   let date = new Date(time);
+    //   return formatDate(date, "yyyy-MM-dd");
+    // },
     formatStatus(endTime) {
       let now = new Date().getTime();
       let endDate = new Date(endTime);

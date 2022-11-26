@@ -21,7 +21,7 @@
           type="text"
           v-model="loginForm.username"
           autoComplete="on"
-          placeholder="请输入用户名，admin/productAdmin/orderAdmin"
+          placeholder="admin/productAdmin/orderAdmin"
         >
           <span slot="prefix">
             <svg-icon icon-class="user" class="color-main"></svg-icon>
@@ -35,7 +35,7 @@
           @keyup.enter="handleLogin"
           v-model="loginForm.password"
           autoComplete="on"
-          placeholder="请输入密码，测试密码为123456"
+          placeholder="测试密码为123456"
         >
           <span slot="prefix">
             <svg-icon icon-class="password" class="color-main"></svg-icon>
@@ -104,7 +104,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations("user", ["SET_TOKEN"]),
+    ...mapMutations("user", ["SET_TOKEN", "SET_NAME"]),
 
     validateUsername(rule, value, callback) {
       let temp = value.trim();
@@ -133,7 +133,8 @@ export default {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true;
-          adminLoginApi().then((response) => {
+          this.SET_NAME(this.loginForm.username)
+          adminLoginApi(this.loginForm.username, this.loginForm.password).then((response) => {
             setCookie("username", this.loginForm.username, 15);
             setCookie("password", this.loginForm.password, 15);
             setToken(response.token);

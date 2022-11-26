@@ -31,12 +31,11 @@
             <el-table-column label="操作" align="center" width="150">
               <template v-slot="scope">
                 <el-button
-                  type="text"
                   size="mini"
                   @click="handleEdit(scope.row)"
                   >编辑</el-button
                 >
-                <el-button type="text" size="mini" @click="handleDelete()"
+                <el-button type="danger" size="mini" @click="handleDelete()"
                   >删除</el-button
                 >
               </template>

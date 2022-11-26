@@ -16,7 +16,7 @@
           <el-table-column prop="id" label="服务单号" width="100" align="center"/>
           <el-table-column label="申请时间" align="center">
             <template v-slot="scope">
-              {{scope.row.createTime | formatTime}}
+              {{scope.row.createTime | formatDate}}
             </template>
           </el-table-column>
           <el-table-column prop="memberUsername" label="用户账号" width="100" align="center"/>
@@ -32,7 +32,7 @@
           </el-table-column>
           <el-table-column label="处理时间" align="center">
             <template v-slot="scope">
-              {{scope.row.handleTime | formatTime}}
+              {{scope.row.handleTime | formatDate}}
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center">
@@ -118,14 +118,6 @@ export default {
     this.getOrderReturnApplyList();
   },
   filters: {
-    formatTime(time) {
-      if (time == null || time === "") {
-        return "N/A";
-      }
-      let date = new Date(time);
-      return formatDate(date, "yyyy-MM-dd hh:mm:ss");
-    },
-
     formatStatus(status) {
       if(status === 0){
         return '待处理'

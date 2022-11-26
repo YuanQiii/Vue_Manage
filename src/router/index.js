@@ -80,6 +80,8 @@ const UpdateRoleMenu = () => import('@/views/ums/menu/UpdateRoleMenu')
 const ResourceList = () => import('@/views/ums/resource/ResourceList')
 const ResourceCategoryList = () => import('@/views/ums/resource/ResourceCategoryList')
 
+const LargeFileUpload = () => import('@/views/upload/LargeFileUpload.vue')
+
 export const constantRouterMap = [{
   path: "/login",
   name: "login",
@@ -99,19 +101,36 @@ export const constantRouterMap = [{
 {
   path: "/home",
   component: Layout,
-  children: [{
-    path: "",
-    name: "home",
-    component: Home,
-    meta: {
-      title: "首页",
-      icon: "home",
+  children: [
+    {
+      path: "",
+      name: "home",
+      component: Home,
+      meta: {
+        title: "首页",
+        icon: "home",
+      },
     },
-  },],
+  ]
 },
 ];
 
 export const asyncRouterMap = [
+  {
+    path: "/largeFileUpload",
+    component: Layout,
+    children: [
+      {
+        path: "",
+        name: 'largeFileUpload',
+        component: LargeFileUpload,
+        meta: {
+          title: "文件",
+          icon: "example",
+        },
+      },
+    ]
+  },
   {
     path: "/pms",
     component: Layout,
@@ -451,6 +470,20 @@ export const asyncRouterMap = [
     hidden: true,
   },
 ];
+
+// 解决路由多次重定向报错问题
+const originalPush = VueRouter.prototype.push
+const originalReplace = VueRouter.prototype.replace
+// push
+VueRouter.prototype.push = function push (location, onResolve, onReject) {
+  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+  return originalPush.call(this, location).catch(err => err)
+}
+// replace
+VueRouter.prototype.replace = function push (location, onResolve, onReject) {
+  if (onResolve || onReject) return originalReplace.call(this, location, onResolve, onReject)
+  return originalReplace.call(this, location).catch(err => err)
+}
 
 const router = new VueRouter({
   mode: "history",

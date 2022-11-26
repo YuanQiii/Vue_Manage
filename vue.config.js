@@ -6,9 +6,6 @@
  */
 const { defineConfig } = require("@vue/cli-service");
 const CompressionWebpackPlugin = require("compression-webpack-plugin")
-const PrerenderSPAPlugin = require('prerender-spa-plugin');
-const Renderer = PrerenderSPAPlugin.PuppeteerRenderer;
-
 const path = require("path");
 
 function resolve(dir) {

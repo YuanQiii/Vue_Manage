@@ -22,7 +22,7 @@ router.beforeEach((to, from, next) => {
       });
     } else {
       if (store.state.user.roles.length === 0) {
-        adminLoginApi().then((response) => {
+        adminLoginApi(store.state.user.name).then((response) => {
           store.commit("user/SET_NAME", response.data.username);
           store.commit("user/SET_AVATAR", response.data.icon);
           store.commit("user/SET_ROLES", response.data.roles);
