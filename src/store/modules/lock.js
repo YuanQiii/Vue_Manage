@@ -2,9 +2,11 @@ import FileSaver from 'file-saver'
 import x2js from 'x2js'
 import Konva from 'konva';
 import {handleMove, handleValueTransform} from "@/utils/lock";
-import {revokeOp} from "@/views/lock/queue/OperationQueue";
-import {delTween, tweenList} from "@/views/lock/tween/Tween";
+import {delTween, tweenArgsList, tweenList} from "@/views/lock/tween/Tween";
 import dayjs from "dayjs";
+import {addTag, handleXML, updateTag} from "@/views/lock/xml/XML";
+import _ from "lodash";
+import sizeof from 'object-sizeof'
 
 
 const state = {
@@ -13,7 +15,16 @@ const state = {
     previewWidth: 1080,
     previewHeight: 1920,
     konvaStage: null,
-    xmlFile: null,
+
+    konvaStaticLayer: new Konva.Layer(),
+
+    xmlObj: {
+        Lockscreen: {
+            _version: '1',
+            _frameRate: '30',
+            _screenWidth: '1080'
+        },
+    },
 
     files: {},
     layersObj: [],
@@ -21,17 +32,40 @@ const state = {
 
     deleteLayersObj: [],
 
-    tr: new Konva.Transformer(),
+    tr: null,
 
     operationHistory: [],
-    tweenArgs: {}
+    tweenArgs: {},
+    events: [],
+
+    konvaImageTweenList: [],
+    konvaImageEventList: [],
+
+    history: [],
+    currentIndex: -1,
+    flag: true,
+    xxx: true,
+
+    tempThis: null
 
 
 };
 
+
 const mutations = {
-    setKonvaStage(state, payload){
-        state.konvaStage = payload
+    setKonvaStage(state){
+        let width = Math.round(state.previewWidth / state.scaleRate)
+        let height = Math.round(state.previewHeight / state.scaleRate)
+        let container = 'konva-container'
+
+        let stage = new Konva.Stage({
+          container,
+          width,
+          height,
+        })
+
+        stage.scale()
+        state.konvaStage = stage
     },
 
     updateMode(state, payload){
@@ -41,12 +75,19 @@ const mutations = {
     addFile(state, payload){
         state.files =  Object.assign(state.files, payload)
 
+        state.konvaStage.add(state.konvaStaticLayer);
+        if(state.xxx){
+            // state.konvaStaticLayer.add(state.tr)
+            state.xxx = false
+        }
+
+
         console.log('files', state.files)
 
         for (const [key, value] of Object.entries(payload)) {
 
-            let layer = new Konva.Layer();
-            state.konvaStage.add(layer);
+            // let layer = new Konva.Layer();
+
             let imageObj = new Image();
             imageObj.onload = function() {
                 let tempImage = new Konva.Image({
@@ -63,9 +104,9 @@ const mutations = {
                     id: `${key}-${dayjs().unix()}`
                 });
 
-                console.log('tempImage', tempImage)
+                console.log('tempImage0', _.cloneDeep(tempImage))
 
-                layer.add(state.tr)
+                // layer.add(state.tr)
 
                 tempImage.on('mousedown', function() {
 
@@ -77,9 +118,12 @@ const mutations = {
                                 ele.strokeWidth(Number(ele !== this))
                             })
 
+                            if(state.tr) state.tr.destroy()
+                            state.tr = new Konva.Transformer()
+                            state.konvaStaticLayer.add(state.tr)
                             state.tr.nodes([this])
 
-                            layer.draw();
+                            state.konvaStaticLayer.draw();
                         }
                     }
                 });
@@ -99,18 +143,38 @@ const mutations = {
                 });
 
                 tempImage.on('dragmove', function() {
-                    handleMove(state.konvaStage)
+                    // handleMove(state.konvaStage)
                 });
 
                 tempImage.on('dragend', function() {
+
+                    updateTag(state.xmlObj, tempImage.attrs.id, {
+                        x: tempImage.x(),
+                        y: tempImage.y()
+                    })
+
                     state.operationHistory.push({
                         layer: tempImage,
                         op: 'update',
                         style: {
-                            x: tempDragX,
-                            y: tempDragY
+                            x: `${tempDragX}`,
+                            y: `${tempDragY}`
                         }
                     })
+
+                    // state.tr.detach()
+                    console.log('state.konvaStaticLayer0', state.konvaStaticLayer)
+
+                    let obj = _.cloneDeep({
+                        layersObj: state.layersObj,
+                        layerEditObj: state.layerEditObj,
+                        konvaImageTweenList: state.konvaImageTweenList
+                    })
+                    obj.konvaStaticLayer = state.konvaStaticLayer.clone()
+                    state.history.push(obj)
+                    state.currentIndex++
+
+                    console.log('state.history', state.history)
                 });
 
                 tempImage.on('mouseover', function() {
@@ -154,22 +218,42 @@ const mutations = {
                     })
                 });
 
+                console.log('tempImage1', tempImage)
+
                 // add the shape to the layer
-                layer.add(tempImage);
-                layer.batchDraw();
+                // layer.add(tempImage);
+                // layer.batchDraw();
+
+                state.konvaStaticLayer.add(tempImage)
+                // state.konvaStaticLayer.batchDraw()
+
+                // setTimeout(() => {
+                //     state.konvaStaticLayer.remove(tempImage)
+                // }, 1000)
+
+                // tempImage.cache()
                 // layer.destroy()
 
-                tempImage.layer = layer
+                // tempImage.layer = layer
+                // tempImage.layer = state.konvaStaticLayer
 
                 state.layersObj.push(tempImage)
-                console.log(tempImage)
+
+                // 添加xml
+                addTag(state.xmlObj, 'Lockscreen', 'Image', tempImage.attrs.id, {
+                    x: '0',
+                    y: '0',
+                    src: `${key}.png`,
+                    align: 'center',
+                    alignV: 'center'
+                })
 
                 // 添加操作历史
-                state.operationHistory.push({
-                    layer: tempImage,
-                    op: 'add'
-                })
-                console.log('state.operationHistory', state.operationHistory)
+                // state.operationHistory.push({
+                //     layer: tempImage,
+                //     op: 'add'
+                // })
+                // console.log('state.operationHistory', state.operationHistory)
 
             };
             imageObj.src = URL.createObjectURL(value);
@@ -203,10 +287,10 @@ const mutations = {
     setLayerTr(state, payload){
         if(state.layerEditObj === payload[0]){
             if(payload[1]){
-                state.tr.nodes([payload[0]])
+                // state.tr.nodes([payload[0]])
             }else{
-                state.tr.nodes([])
-                state.tr.stopTransform()
+                // state.tr.nodes([])
+                // state.tr.stopTransform()
             }
         }
     },
@@ -222,17 +306,22 @@ const mutations = {
 
     exportFile(state){
         let xs = new x2js()
-        let blob = new Blob([xs.js2xml(state.xmlFile)], { type: "text/plain;charset=utf-8" });
+        let xmlStr = handleXML(xs.js2xml(state.xmlObj))
+        let blob = new Blob([xmlStr], { type: "text/plain;charset=utf-8" });
         FileSaver.saveAs(blob, 'demo.xml')
     },
 
     deleteLayersObj(state, payload){
         payload.visible(false)
         state.deleteLayersObj.push(state.layersObj.pop())
-        state.tr.nodes([])
+        // state.tr.nodes([])
         if(payload.attrs.id === state.layerEditObj.attrs.id){
             state.layerEditObj = null
         }
+    },
+
+    addEvent(state, payload){
+        state.events.push(payload)
     },
 
     addOp(state, payload){
@@ -282,8 +371,8 @@ const mutations = {
                     opObj.layer.layer.batchDraw()
 
                     if(opObj.layer === state.layerEditObj){
-                        state.tr.nodes([])
-                        state.tr.nodes([opObj.layer])
+                        // state.tr.nodes([])
+                        // state.tr.nodes([opObj.layer])
                     }
                 }
 
@@ -292,10 +381,94 @@ const mutations = {
                     if(opObj.tween.op === 'add'){
                         delTween(opObj.layer)
                     }
+                }
 
+                if(opObj.event){
+                    console.log('事件')
+                    if(opObj.event.op === 'add'){
+                        opObj.layer.off(opObj.event.eventName)
+                    }
                 }
             }
         }
+    },
+
+    test(state){
+
+    },
+
+    updateKonvaImageTweenList(state, payload){
+        if(payload.type === 'add'){
+            state.konvaImageTweenList.push(payload.value)
+        }
+
+        if(payload.type === 'delete'){
+            state.konvaImageTweenList.splice(payload.value, 1)
+        }
+    },
+
+    updateKonvaImageEventList(state, payload){
+        let {layerObj, layerObjControlled, eventName} = payload
+        state.layersObj.forEach(ele => {
+            if(ele.attrs.id === layerObj.attrs.id){
+                ele.on('click', function (){
+                    console.log('click')
+                    state.tempThis = this
+
+                    layerObjControlled.visible(!layerObjControlled.visible())
+                })
+            }
+        })
+        state.konvaImageEventList.push({
+            Controller: layerObj,
+            Controlled: layerObjControlled,
+            eventName
+        })
+    },
+
+    recordState(state){
+        let obj = _.cloneDeep({
+            layersObj: state.layersObj,
+            layerEditObj: state.layerEditObj,
+            konvaImageTweenList: state.konvaImageTweenList
+        })
+        obj.konvaStaticLayer = state.konvaStaticLayer.clone()
+        state.history.push(obj)
+        state.currentIndex++
+
+        console.log('state.history', state.history)
+
+        // console.log('sizeof', sizeof(state.history))
+    },
+
+    undo(state){
+        state.currentIndex--
+        state.flag = false
+        // let {konvaStaticLayer, layersObj, layerEditObj, konvaImageTweenList} = _.cloneDeep(state.history[state.currentIndex])
+        let {layerEditObj} = _.cloneDeep(state.history[state.currentIndex])
+
+        state.konvaStaticLayer = state.history[state.currentIndex].konvaStaticLayer.clone()
+        // state.layersObj = layersObj
+        // state.layerEditObj = layerEditObj
+        // state.konvaImageTweenList = konvaImageTweenList
+
+        setTimeout(() => {
+            state.flag = true
+        }, 1000)
+        state.konvaStage.destroyChildren()
+        console.log('state.konvaStage.getLayers()', state.konvaStage.getLayers())
+        state.konvaStage.add(state.konvaStaticLayer)
+        console.log('state.konvaStage.getLayers()', state.konvaStage.getLayers())
+
+        if(state.tr) state.tr.destroy()
+        state.tr = new Konva.Transformer()
+        state.konvaStaticLayer.add(state.tr)
+        state.tr.nodes([layerEditObj])
+
+
+
+        console.log('tweenArgsList', tweenArgsList)
+
     }
 };
 

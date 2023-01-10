@@ -3,29 +3,27 @@
     <el-button @click="handleNewProject">新建</el-button>
     <input ref="lockScreenFiles" type="file" multiple @change="handleFilesChange"/>
     <el-button @click="handleChangeMode">{{mode | getName}}</el-button>
-    <el-button>开发者模式</el-button>
-    <el-button @click="handleRevoke">撤销</el-button>
-    <el-button @click="handleTest">测试</el-button>
+    <el-button @click="handleUndo">撤销</el-button>
+    <el-button @click="handleRedo">重做</el-button>
     <el-button @click="handleExport">导出</el-button>
   </div>
 </template>
 
 <script>
-
 import {mapMutations, mapState} from "vuex";
-import {updateAllPlayTween} from "@/views/lock/tween/Tween";
+
 export default {
-  name: "toolBar",
+  name: "ToolBar",
   computed: {
-    ...mapState('lock', ['mode', 'tr'])
+    ...mapState('editor', ['mode']),
   },
   filters: {
     getName(value){
       return value === 'edit' ? '编辑' : '预览'
-    }
+    },
   },
   methods: {
-    ...mapMutations('lock', ['addFile', 'exportFile', 'updateMode', 'revokeOp', 'test', 'undo']),
+    ...mapMutations('editor', ['addImages', 'undo', 'redo', 'updateMode']),
     handleNewProject(){
       console.log('handleNewProject')
     },
@@ -38,34 +36,24 @@ export default {
         filesObj[ele.name.slice(0, -4)] = ele
       })
 
-      this.addFile(filesObj)
-      console.log(filesObj)
-    },
-    handleExport(){
-      this.exportFile()
+      this.addImages(filesObj)
     },
     handleChangeMode(){
-      if(this.mode === 'edit'){
-        this.updateMode('preview')
-        this.tr.nodes([])
-        updateAllPlayTween('stop')
-        updateAllPlayTween('play')
-      }else{
-        this.updateMode('edit')
-        updateAllPlayTween('stop')
-      }
+      this.updateMode()
     },
-    handleRevoke(){
-      // this.revokeOp()
+    handleUndo(){
       this.undo()
     },
-    handleTest(){
-      this.test()
+    handleRedo(){
+      this.redo()
+    },
+    handleExport(){
+      console.log('handleExport')
     }
   }
 }
 </script>
 
-<style lang="less" scoped>
+<style scoped>
 
 </style>

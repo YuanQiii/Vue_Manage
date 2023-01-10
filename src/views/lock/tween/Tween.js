@@ -6,12 +6,15 @@ let tweenArgsList = []
 let scaleRate = 3
 
 export {
-    tweenList
+    tweenList,
+    tweenArgsList
 }
 export function addTween(tweenArgs){
     let index = tweenArgsList.findIndex(ele => {
         return ele.layerObj === tweenArgs.layerObj
     })
+
+    let konvaImageTweenList = store.state.lock.konvaImageTweenList
 
     if(index === -1){
         console.log('添加动画')
@@ -25,8 +28,14 @@ export function addTween(tweenArgs){
         })
 
         tweenArgsList.push(tweenArgs)
-        tweenList.push(createAni(tweenArgs))
+        console.log('tweenArgsList', tweenArgsList)
+        // tweenList.push(createAni(tweenArgs))
 
+
+        store.commit('lock/updateKonvaImageTweenList', {
+            type: 'add',
+            value: createAni(tweenArgs)
+        })
 
     }else{
         console.log('更新动画')
@@ -41,10 +50,10 @@ export function addTween(tweenArgs){
         })
 
         tweenArgsList[index] = tweenArgs
-        tweenList[index] = createAni(tweenArgs)
+        konvaImageTweenList[index] = createAni(tweenArgs)
 
     }
-    console.log(tweenList)
+    console.log(konvaImageTweenList)
 }
 
 export function delTween(layerObj){
@@ -53,11 +62,15 @@ export function delTween(layerObj){
     })
 
     tweenArgsList.splice(index, 1)
-    tweenList.splice(index, 1)
+    store.commit('lock/updateKonvaImageTweenList', {
+        type: 'delete',
+        value: index
+    })
+    // tweenList.splice(index, 1)
 }
 
 export function updatePlayTween(layerObj, op){
-    tweenList.forEach(ele => {
+    store.state.lock.konvaImageTweenList.forEach(ele => {
         if(ele.layerObj === layerObj){
             if(op === 'play'){
                 ele.playAni()
@@ -70,7 +83,7 @@ export function updatePlayTween(layerObj, op){
 }
 
 export function updateAllPlayTween(type){
-    tweenList.forEach(ele => {
+    store.state.lock.konvaImageTweenList.forEach(ele => {
         if(type === 'play'){
             if(ele !== null){
                 ele.playAni()
@@ -108,6 +121,7 @@ function createAni({layerObj, positionKeyframe, positionRepeat, positionDelay}){
                         x: obj.x / scaleRate,
                         y: obj.y / scaleRate,
                         onFinish(){
+                            tween.destroy();
                             lastTime = obj.time
                             fn(index+1)
                         }

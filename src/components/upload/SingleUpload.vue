@@ -1,17 +1,14 @@
-<!--
- * @Autor: YuanQiii
- * @GitHub: https://github.com/YuanQiii
- * @Date: 2022-04-06 15:45:54
- * @FilePath: \vue_manage\src\components\upload\SingleUpload.vue
--->
 <template>
+   
   <div>
     <el-upload
-      :action="url"
+      :action="useOss ? ossUploadUrl : minioUploadUrl"
+      :data="useOss ? dataObj : null"
       list-type="picture"
       :multiple="false"
       :show-file-list="showFileList"
       :file-list="fileList"
+      :before-upload="beforeUpload"
       :on-remove="handleRemove"
       :on-success="handleUploadSuccess"
       :on-preview="handlePreview"
@@ -27,6 +24,8 @@
   </div>
 </template>
 <script>
+// import {policy} from '@/api/oss'
+
 export default {
   name: "SingleUpload",
   props: {
@@ -62,8 +61,19 @@ export default {
   },
   data() {
     return {
-      url: "https://www.imgurl.org/upload/aws_s3",
+      dataObj: {
+        policy: "",
+        signature: "",
+        key: "",
+        ossaccessKeyId: "",
+        dir: "",
+        host: "",
+        // callback:'',
+      },
       dialogVisible: false,
+      useOss: true, //使用oss->true;使用MinIO->false
+      ossUploadUrl: "http://macro-oss.oss-cn-shenzhen.aliyuncs.com",
+      minioUploadUrl: "http://localhost:8080/minio/upload",
     };
   },
   methods: {
@@ -76,10 +86,39 @@ export default {
     handlePreview(file) {
       this.dialogVisible = true;
     },
+    beforeUpload(file) {
+      let _self = this;
+      if (!this.useOss) {
+        //不使用oss不需要获取策略
+        return true;
+      }
+      return new Promise((resolve, reject) => {
+        policy()
+          .then((response) => {
+            _self.dataObj.policy = response.data.policy;
+            _self.dataObj.signature = response.data.signature;
+            _self.dataObj.ossaccessKeyId = response.data.accessKeyId;
+            _self.dataObj.key = response.data.dir + "/${filename}";
+            _self.dataObj.dir = response.data.dir;
+            _self.dataObj.host = response.data.host;
+            // _self.dataObj.callback = response.data.callback;
+            resolve(true);
+          })
+          .catch((err) => {
+            console.log(err);
+            reject(false);
+          });
+      });
+    },
     handleUploadSuccess(res, file) {
       this.showFileList = true;
       this.fileList.pop();
-      this.fileList.push({ name: res.name, url: res.url });
+      let url = this.dataObj.host + "/" + this.dataObj.dir + "/" + file.name;
+      if (!this.useOss) {
+        //不使用oss直接获取图片路径
+        url = res.data.url;
+      }
+      this.fileList.push({ name: file.name, url: url });
       this.emitInput(this.fileList[0].url);
     },
   },

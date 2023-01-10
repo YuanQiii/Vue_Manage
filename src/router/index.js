@@ -81,7 +81,9 @@ const ResourceList = () => import('@/views/ums/resource/ResourceList')
 const ResourceCategoryList = () => import('@/views/ums/resource/ResourceCategoryList')
 
 const LargeFileUpload = () => import('@/views/upload/LargeFileUpload.vue')
+
 const LockScreenPreview = () => import('@/views/lock/LockScreenPreview')
+const LockscreenEditor = () => import('@/views/editor/LockscreenEditor')
 
 
 export const constantRouterMap = [{
@@ -134,15 +136,15 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: "/LockScreenPreview",
+    path: "/lockscreenEditor",
     component: Layout,
     children: [
       {
         path: "",
-        name: 'lockScreenPreview',
-        component: LockScreenPreview,
+        name: 'lockscreenEditor',
+        component: LockscreenEditor,
         meta: {
-          title: "流程",
+          title: "编辑器",
           icon: "tree",
         },
       },

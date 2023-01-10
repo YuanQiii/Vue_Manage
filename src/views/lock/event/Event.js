@@ -1,8 +1,11 @@
-import Konva from "konva";
+
+import store from '@/store'
 
 let eventList = []
 
 export function addEvent(layerObj, layerObjControlled, eventName){
+
+
     layerObj.on('click', function (){
         layerObjControlled.visible(!layerObjControlled.visible())
     })
@@ -12,4 +15,14 @@ export function addEvent(layerObj, layerObjControlled, eventName){
         Controlled: layerObjControlled,
         eventName
     })
+
+    store.commit('lock/addOp', {
+        layer: layerObj,
+        op: 'update',
+        event: {
+            op: 'add',
+            eventName: 'click'
+        }
+    })
+
 }

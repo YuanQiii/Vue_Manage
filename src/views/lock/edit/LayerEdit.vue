@@ -125,6 +125,7 @@ import {addTween, updatePlayTween} from "@/views/lock/tween/Tween";
 import {addEvent} from "@/views/lock/event/Event";
 import {debounce} from "@/utils/lock";
 import _ from 'lodash'
+import {updateTag} from "@/views/lock/xml/XML";
 
 export default {
   name: "LayerEdit",
@@ -206,7 +207,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('lock', ['layersObj', 'layerEditObj', 'scaleRate']),
+    ...mapState('lock', ['layersObj', 'layerEditObj', 'scaleRate', 'xmlObj']),
     layerOptions(){
       let arr = []
       this.layersObj.forEach(ele => {
@@ -264,7 +265,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('lock', ['updateTweenArgs', 'addOp']),
+    ...mapMutations('lock', ['updateTweenArgs', 'addOp', 'updateKonvaImageEventList']),
     handleAddKeyframe(){
       let obj = JSON.parse(JSON.stringify(this.positionKeyframe.slice(-1)[0]))
       obj.id = this.positionKeyframe.length
@@ -297,6 +298,24 @@ export default {
       tweenArgs.layerObj = this.layerEditObj
 
       addTween(tweenArgs)
+
+      let animation = {
+        'PositionAnimation': {
+          '_repeat': `${this.positionRepeat}`,
+          '_delay': `${this.positionDelay}`
+        }
+      }
+
+      this.positionKeyframe.forEach(ele => {
+        animation['PositionAnimation'][`Position-${ele.id}`] = {
+          '_x': `${ele.x}`,
+          '_y': `${ele.y}`,
+          '_time': `${ele.time}`,
+        }
+      })
+
+      updateTag(this.xmlObj, this.layerEditObj.attrs.id, null, animation)
+
     },
     handlePlay(){
       updatePlayTween(this.layerEditObj, 'play')
@@ -309,8 +328,18 @@ export default {
       console.log(this.eventControlled)
       this.layersObj.forEach(ele => {
         if(ele.attrs.id === this.eventControlled){
-          addEvent(this.layerEditObj, ele, this.eventList[0])
+          // addEvent(this.layerEditObj, ele, this.eventList[0])
+          this.updateKonvaImageEventList({
+            layerObj: this.layerEditObj,
+            layerObjControlled: ele,
+            eventName: this.eventList[0]
+          })
         }
+      })
+      updateTag(this.xmlObj, this.layerEditObj.attrs.id, null, null, {
+        Controller: this.layerEditObj,
+        Controlled: this.eventControlled,
+        eventName: 'click'
       })
 
     },

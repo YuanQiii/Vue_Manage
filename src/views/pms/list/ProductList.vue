@@ -38,9 +38,9 @@
 <script>
 import { productListApi } from "@/api/product";
 
-import ProductFilter from "./ProductFilter.vue";
-import ProductOperate from "./ProductOperate.vue";
-import ProductDatasheets from "./ProductDatasheets.vue";
+import ProductFilter from "./components/ProductFilter.vue";
+import ProductOperate from "./components/ProductOperate.vue";
+import ProductDatasheets from "./components/ProductDatasheets.vue";
 export default {
   name: "ProductList",
   components: {

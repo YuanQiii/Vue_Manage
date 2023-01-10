@@ -29,25 +29,38 @@ export default {
     return {
     }
   },
+  watch: {
+    '$store.state.lock.konvaStaticLayer': function (){
+      this.record()
+    },
+    '$store.state.lock.layersObj': function (){
+      this.record()
+    },
+    '$store.state.lock.layerEditObj': function (){
+      this.record()
+    },
+    '$store.state.lock.konvaImageTweenList': function (){
+      this.record()
+    },
+    '$store.state.lock.konvaImageEventList': function (){
+      this.record()
+    },
+  },
   computed: {
-    ...mapState('lock', ['previewWidth', 'previewHeight', 'scaleRate'])
+    ...mapState('lock', ['previewWidth', 'previewHeight', 'scaleRate', 'flag', 'history'])
   },
   methods: {
-    ...mapMutations('lock', ['setKonvaStage']),
+    ...mapMutations('lock', ['setKonvaStage', 'recordState']),
     initKonva(){
-
-      let width = Math.round(this.previewWidth / this.scaleRate)
-      let height = Math.round(this.previewHeight / this.scaleRate)
-
-      let stage = new Konva.Stage({
-        container: 'konva-container',
-        width,
-        height,
-      })
-
-      stage.scale()
-      this.setKonvaStage(stage)
+      this.setKonvaStage()
     },
+    record(){
+      if(this.flag){
+        this.recordState()
+        console.log('history', this.history)
+      }
+
+    }
   }
 }
 </script>

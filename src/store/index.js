@@ -10,6 +10,7 @@ import Vuex from "vuex";
 import user from "./modules/user";
 import pemission from "./modules/pemission";
 import lock from './modules/lock'
+import editor from "@/store/modules/editor";
 import app from './modules/app'
 
 Vue.use(Vuex);
@@ -23,6 +24,7 @@ export default new Vuex.Store({
     user,
     pemission,
     lock,
+    editor,
     app
   },
 });
